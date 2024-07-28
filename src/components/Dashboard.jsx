@@ -141,16 +141,23 @@ export function Dashboard() {
     );
   });
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
-  const displayedClients = filteredClients.slice(
+  // Sort by date in descending order
+  const sortedClients = [...filteredClients].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+
+  const totalPages = Math.ceil(sortedClients.length / itemsPerPage);
+  const displayedClients = sortedClients.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
