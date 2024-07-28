@@ -15,7 +15,6 @@ import { useEffect, useState } from "react";
 import { ModalTransactions } from "./ModalTransactions";
 import { ModalTop10client } from "./ModalTop10client";
 import { Modal2Mois } from "./Modal2Mois";
-//import { signOut } from "next-auth/react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal"; // Import the confirmation modal
 
 export function Dashboard() {
@@ -32,9 +31,8 @@ export function Dashboard() {
   const [totalCreditOlderThanTwoMonths, setTotalCreditOlderThanTwoMonths] =
     useState(0);
   const [topCreditClientsTotal, setTopCreditClientsTotal] = useState(0);
-  //const [page, setPage] = useState(1);
-  //const [isLoading, setIsLoading] = useState(false);
-  //const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10); // Adjust this value as needed
 
   const fetchClients = async () => {
     try {
@@ -102,25 +100,6 @@ export function Dashboard() {
     fetchMetrics();
   }, []);
 
-  /*
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop !==
-          document.documentElement.offsetHeight ||
-        isLoading ||
-        !hasMore
-      )
-        return;
-      setPage((prevPage) => prevPage + 1);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [isLoading, hasMore]);
-  */
   const handleDeleteClient = async () => {
     try {
       const res = await fetch(`/api/clients/${selectedClientId}`, {
@@ -162,6 +141,16 @@ export function Dashboard() {
     );
   });
 
+  // Pagination logic
+  const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
+  const displayedClients = filteredClients.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -252,7 +241,7 @@ export function Dashboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredClients
+            {displayedClients
               .sort((a, b) => b.id - a.id)
               .map((client) => (
                 <TableRow key={client.id}>
@@ -296,13 +285,25 @@ export function Dashboard() {
               ))}
           </TableBody>
         </Table>
-        {/* 
-        {isLoading && <div>Chargement...</div>}
-        {!hasMore && <div>Pas plus de clients</div>}
-        {error && <div>{error}</div>}
-        */}
       </div>
 
+      {/* Pagination Controls */}
+      <div className="mt-4 flex justify-center">
+        <Button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="mx-2"
+        >
+          Précédent
+        </Button>
+        <Button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="mx-2"
+        >
+          Suivant
+        </Button>
+      </div>
       <ModalTransactions
         isOpen={isModalTransactionsOpen}
         onClose={() => setIsModalTransactionsOpen(false)}
