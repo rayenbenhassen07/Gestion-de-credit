@@ -39,13 +39,7 @@ export async function POST(req) {
 // GET request handler to fetch clients with pagination
 export async function GET(req) {
   try {
-    const { searchParams } = new URL(req.url);
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const pageSize = parseInt(searchParams.get("pageSize") || "10", 10);
-
     const clients = await prisma.client.findMany({
-      skip: (page - 1) * pageSize,
-      take: pageSize,
       include: {
         transactions: true, // Include transactions in the response
       },

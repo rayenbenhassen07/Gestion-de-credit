@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { ModalTransactions } from "./ModalTransactions";
 import { ModalTop10client } from "./ModalTop10client";
 import { Modal2Mois } from "./Modal2Mois";
-import { signOut } from "next-auth/react";
+//import { signOut } from "next-auth/react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal"; // Import the confirmation modal
 
 export function Dashboard() {
@@ -32,27 +32,16 @@ export function Dashboard() {
   const [totalCreditOlderThanTwoMonths, setTotalCreditOlderThanTwoMonths] =
     useState(0);
   const [topCreditClientsTotal, setTopCreditClientsTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  //const [page, setPage] = useState(1);
+  //const [isLoading, setIsLoading] = useState(false);
+  //const [hasMore, setHasMore] = useState(true);
 
-  const fetchClients = async (page) => {
-    setIsLoading(true);
+  const fetchClients = async () => {
     try {
-      const res = await fetch(`/api/clients?page=${page}`);
+      const res = await fetch(`/api/clients`);
       if (res.ok) {
         const data = await res.json();
-        if (data.length === 0) {
-          setHasMore(false);
-        } else {
-          setClients((prevClients) => {
-            const clientMap = new Map(
-              prevClients.map((client) => [client.id, client])
-            );
-            data.forEach((client) => clientMap.set(client.id, client));
-            return Array.from(clientMap.values());
-          });
-        }
+        setClients(data);
       } else {
         const data = await res.json();
         setError(data.error || "Échec de la récupération des clients");
@@ -61,7 +50,6 @@ export function Dashboard() {
       setError("Échec de la récupération des clients");
       console.error("Échec de la récupération des clients", error);
     }
-    setIsLoading(false);
   };
 
   const fetchMetrics = async () => {
@@ -107,13 +95,14 @@ export function Dashboard() {
   };
 
   useEffect(() => {
-    fetchClients(page);
-  }, [page]);
+    fetchClients();
+  }, []);
 
   useEffect(() => {
     fetchMetrics();
   }, []);
 
+  /*
   useEffect(() => {
     const handleScroll = () => {
       if (
@@ -131,7 +120,7 @@ export function Dashboard() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [isLoading, hasMore]);
-
+  */
   const handleDeleteClient = async () => {
     try {
       const res = await fetch(`/api/clients/${selectedClientId}`, {
@@ -307,9 +296,11 @@ export function Dashboard() {
               ))}
           </TableBody>
         </Table>
+        {/* 
         {isLoading && <div>Chargement...</div>}
         {!hasMore && <div>Pas plus de clients</div>}
         {error && <div>{error}</div>}
+        */}
       </div>
 
       <ModalTransactions
