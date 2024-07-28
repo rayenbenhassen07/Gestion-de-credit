@@ -108,7 +108,7 @@ export function Modal({ isOpen, onClose, id }) {
             </div>
             <div className="flex flex-col lg:flex-row justify-center items-center gap-4">
               <div className="flex flex-col space-y-1">
-                <label className="text-lg text-gray-700">Amount</label>
+                <label className="text-lg text-gray-700">Montant</label>
                 <input
                   type="number"
                   name="amount"
@@ -117,7 +117,7 @@ export function Modal({ isOpen, onClose, id }) {
                 />
               </div>
               <div className="flex flex-col space-y-1">
-                <label className="text-lg text-gray-700">Designation</label>
+                <label className="text-lg text-gray-700">Désignation</label>
                 <input
                   type="text"
                   name="designation"
@@ -143,10 +143,10 @@ export function Modal({ isOpen, onClose, id }) {
               onClick={onClose}
               className="bg-gray-500 text-white text-lg"
             >
-              Cancel
+              Annuler
             </Button>
             <Button type="submit" className="bg-green-500 text-white text-lg">
-              Submit
+              Soumettre
             </Button>
           </div>
         </form>

@@ -6,7 +6,7 @@ import { FaArrowAltCircleLeft } from "react-icons/fa";
 
 import { Modal } from "@/components/Modal"; // Import the modal component
 import { ModalTransactions } from "@/components/ModalTransactions"; // Import the new modal component
-import Image from "next/image";
+import { FaUserAlt } from "react-icons/fa";
 
 export default function ClientPage({ params }) {
   const { clientId } = params;
@@ -77,7 +77,7 @@ export default function ClientPage({ params }) {
   }
 
   if (!client) {
-    return <div>Loading...</div>;
+    return <div>Chargement...</div>;
   }
 
   return (
@@ -94,13 +94,7 @@ export default function ClientPage({ params }) {
           <div className="flex justify-center items-center gap-4 ">
             <div className="flex justify-center items-center gap-4">
               <div className="">
-                <Image
-                  alt=""
-                  src="/avatar.png"
-                  width={200}
-                  height={200}
-                  className="w-12 "
-                />
+                <FaUserAlt size="32" />
               </div>
               <div className="flex flex-col items-start ">
                 <div>{client.name}</div>
@@ -116,7 +110,7 @@ export default function ClientPage({ params }) {
       </div>
 
       <div className="mt-20 bg-white p-4 flex justify-center items-center">
-        Solde crédit avant application : 236 000 TND
+        Solde crédit avant application : {client.oldCredit} TND
       </div>
 
       <div className="mt-20 p-4 bg-white  flex flex-col gap-10 justify-center items-center ">

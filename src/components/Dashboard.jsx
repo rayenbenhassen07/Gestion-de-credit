@@ -55,11 +55,11 @@ export function Dashboard() {
         }
       } else {
         const data = await res.json();
-        setError(data.error || "Failed to fetch clients");
+        setError(data.error || "Échec de la récupération des clients");
       }
     } catch (error) {
-      setError("Failed to fetch clients");
-      console.error("Failed to fetch clients", error);
+      setError("Échec de la récupération des clients");
+      console.error("Échec de la récupération des clients", error);
     }
     setIsLoading(false);
   };
@@ -72,7 +72,7 @@ export function Dashboard() {
         setTotalCredit(totalCredit);
       } else {
         const data = await resTotalCredit.json();
-        setError(data.error || "Failed to fetch total credit");
+        setError(data.error || "Échec de la récupération du crédit total");
       }
 
       const resTotalCreditOlderThanTwoMonths = await fetch(
@@ -85,7 +85,8 @@ export function Dashboard() {
       } else {
         const data = await resTotalCreditOlderThanTwoMonths.json();
         setError(
-          data.error || "Failed to fetch total credit older than two months"
+          data.error ||
+            "Échec de la récupération du crédit total supérieur à deux mois"
         );
       }
 
@@ -95,11 +96,13 @@ export function Dashboard() {
         setTopCreditClientsTotal(totalCredit);
       } else {
         const data = await resTopCreditClients.json();
-        setError(data.error || "Failed to fetch top credit clients");
+        setError(
+          data.error || "Échec de la récupération des clients les plus crédités"
+        );
       }
     } catch (error) {
-      setError("Failed to fetch metrics");
-      console.error("Failed to fetch metrics", error);
+      setError("Échec de la récupération des métriques");
+      console.error("Échec de la récupération des métriques", error);
     }
   };
 
@@ -143,11 +146,11 @@ export function Dashboard() {
         setIsConfirmationModalOpen(false);
       } else {
         const data = await res.json();
-        setError(data.error || "Failed to delete client");
+        setError(data.error || "Échec de la suppression du client");
       }
     } catch (error) {
-      setError("Failed to delete client");
-      console.error("Failed to delete client", error);
+      setError("Échec de la suppression du client");
+      console.error("Échec de la suppression du client", error);
     }
   };
 
@@ -304,8 +307,8 @@ export function Dashboard() {
               ))}
           </TableBody>
         </Table>
-        {isLoading && <div>Loading...</div>}
-        {!hasMore && <div>No more clients</div>}
+        {isLoading && <div>Chargement...</div>}
+        {!hasMore && <div>Pas plus de clients</div>}
         {error && <div>{error}</div>}
       </div>
 

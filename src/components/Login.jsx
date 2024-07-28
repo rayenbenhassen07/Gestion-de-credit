@@ -33,7 +33,9 @@ export default function Login() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-purple-500">
       <div className="w-full max-w-md p-8 space-y-6 bg-white bg-opacity-80 rounded-lg shadow-lg backdrop-blur-md">
-        <h1 className="text-3xl font-bold text-center text-gray-900">Login</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-900">
+          Connexion
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
@@ -57,7 +59,7 @@ export default function Login() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-800"
             >
-              Password
+              mot de passe
             </label>
             <input
               id="password"
@@ -74,7 +76,7 @@ export default function Login() {
               type="submit"
               className="w-full bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-md"
             >
-              Sign In
+              Se connecter
             </button>
           </div>
         </form>
