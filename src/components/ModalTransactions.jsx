@@ -70,7 +70,7 @@ export function ModalTransactions({ isOpen, onClose, id }) {
                         {transaction.montant} TND
                       </TableCell>
                       <TableCell className="p-4">
-                        {transaction.designation}
+                        {transaction.type}/{transaction.designation}
                       </TableCell>
                       <TableCell className="p-4">
                         {new Date(transaction.date).toLocaleDateString()}

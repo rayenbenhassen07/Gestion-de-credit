@@ -51,18 +51,18 @@ export default function AjouterClient() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-gray-100">
       <div
         onClick={handleBack}
         className="absolute top-10 left-10 cursor-pointer"
       >
         <FaArrowAltCircleLeft size="40" />
       </div>
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
+      <div className="w-full max-w-7xl  p-8 space-y-6 bg-white rounded shadow-md">
         <h1 className="text-2xl font-bold text-center">
           Ajouter nouveau Client
         </h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 w-full ">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label
@@ -78,7 +78,7 @@ export default function AjouterClient() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-6 py-3 mt-1 text-lg border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div>
@@ -95,7 +95,7 @@ export default function AjouterClient() {
                 value={formData.num}
                 onChange={handleChange}
                 required
-                className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-6 py-3 mt-1 text-lg border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div>
@@ -112,7 +112,7 @@ export default function AjouterClient() {
                 value={formData.credit}
                 onChange={handleChange}
                 required
-                className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-6 py-3 mt-1 text-lg border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
             <div>
@@ -129,14 +129,14 @@ export default function AjouterClient() {
                 value={formData.designation}
                 onChange={handleChange}
                 required
-                className="block w-full px-4 py-2 mt-1 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-6 py-3 mt-1 text-lg border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
           </div>
           {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
-            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+            className="w-full px-4 py-3 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600 text-lg"
           >
             Enregistrer
           </button>

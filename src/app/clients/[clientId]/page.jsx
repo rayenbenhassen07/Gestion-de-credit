@@ -17,6 +17,10 @@ export default function ClientPage({ params }) {
   const router = useRouter();
 
   useEffect(() => {
+    router.refresh();
+  }, []);
+
+  useEffect(() => {
     const fetchClient = async () => {
       try {
         const res = await fetch(`/api/clients/${clientId}`);
@@ -62,6 +66,8 @@ export default function ClientPage({ params }) {
         const result = await res.json();
         console.log("Success:", result);
         setIsModalOpen(false); // Close modal
+        fetchClient(); // Refetch client data
+        router.refresh();
       } else {
         const result = await res.json();
         setError(result.error || "Failed to submit data");
@@ -77,7 +83,17 @@ export default function ClientPage({ params }) {
   }
 
   if (!client) {
-    return <div>Chargement...</div>;
+    return (
+      <div className="h-screen w-full flex justify-center items-center">
+        <section className="dots-container">
+          <div className="dot"></div>
+          <div className="dot"></div>
+          <div className="dot"></div>
+          <div className="dot"></div>
+          <div className="dot"></div>
+        </section>
+      </div>
+    );
   }
 
   return (
@@ -104,18 +120,27 @@ export default function ClientPage({ params }) {
           </div>
         </div>
 
-        <Button onClick={handleHistorique} className="bg-purple-500 text-white">
+        <Button
+          onClick={() => {
+            router.push(`/transactions/${client.id}`);
+          }}
+          className="bg-blue-500 text-white"
+        >
           Historique
         </Button>
       </div>
 
-      <div className="mt-20 bg-white p-4 flex justify-center items-center">
-        Solde crédit avant application : {client.oldCredit} TND
-      </div>
+      {client.oldCredit ? (
+        <div className="mt-20 bg-white p-4 flex justify-center items-center">
+          Solde crédit avant application : {client.oldCredit} TND
+        </div>
+      ) : (
+        <></>
+      )}
 
       <div className="mt-20 p-4 bg-white  flex flex-col gap-10 justify-center items-center ">
         <Button
-          onClick={handleAchat}
+          onClick={() => router.push(`/transactions/form/${client.id}`)}
           className="bg-green-500 w-[80%] lg:w-[50%] py-8 text-white font-bold text-xl"
         >
           Achat & Acompte
@@ -127,17 +152,6 @@ export default function ClientPage({ params }) {
           {client.gredit} TND
         </div>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleModalSubmit}
-        id={clientId}
-      />
-      <ModalTransactions
-        isOpen={isModalTransactionsOpen}
-        onClose={() => setIsModalTransactionsOpen(false)}
-        id={clientId}
-      />
     </div>
   );
 }

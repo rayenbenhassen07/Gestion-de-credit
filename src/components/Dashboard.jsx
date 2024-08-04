@@ -12,19 +12,13 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ModalTransactions } from "./ModalTransactions";
-import { ModalTop10client } from "./ModalTop10client";
-import { Modal2Mois } from "./Modal2Mois";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal"; // Import the confirmation modal
 
 export function Dashboard() {
   const router = useRouter();
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
-  const [error, setError] = useState(null);
-  const [isModalTransactionsOpen, setIsModalTransactionsOpen] = useState(false);
-  const [isModalTop10client, setIsModalTop10client] = useState(false);
-  const [isModal2Mois, setModal2Mois] = useState(false);
+
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [totalCredit, setTotalCredit] = useState(0);
@@ -33,6 +27,10 @@ export function Dashboard() {
   const [topCreditClientsTotal, setTopCreditClientsTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust this value as needed
+
+  const [isSortedByOldest, setIsSortedByOldest] = useState(false); // Add a state for sorting by oldest
+  const [isSortedByTotalCredit, setIsSortedByTotalCredit] = useState(false); // Add a state for sorting by total credit
+  const [isDefaultSorting, setIsDefaultSorting] = useState(true); // Add a state for default sorting
 
   const fetchClients = async () => {
     try {
@@ -122,11 +120,6 @@ export function Dashboard() {
     }
   };
 
-  const handleOpenModal = (clientId) => {
-    setSelectedClientId(clientId);
-    setIsModalTransactionsOpen(true);
-  };
-
   const handleOpenConfirmationModal = (clientId) => {
     setSelectedClientId(clientId);
     setIsConfirmationModalOpen(true);
@@ -141,10 +134,20 @@ export function Dashboard() {
     );
   });
 
-  // Sort by date in descending order
-  const sortedClients = [...filteredClients].sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  );
+  // Sort based on the current sorting state
+  const sortedClients = (() => {
+    if (isSortedByOldest) {
+      return [...filteredClients].sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
+    } else if (isSortedByTotalCredit) {
+      return [...filteredClients].sort((a, b) => b.gredit - a.gredit);
+    } else {
+      return [...filteredClients].sort(
+        (a, b) => new Date(b.date) - new Date(a.date)
+      );
+    }
+  })();
 
   const totalPages = Math.ceil(sortedClients.length / itemsPerPage);
   const displayedClients = sortedClients.slice(
@@ -158,10 +161,31 @@ export function Dashboard() {
     }
   };
 
+  const handleSortByOldest = () => {
+    setIsSortedByOldest(true);
+    setIsSortedByTotalCredit(false);
+    setIsDefaultSorting(false);
+  };
+
+  const handleSortByTotalCredit = () => {
+    setIsSortedByOldest(false);
+    setIsSortedByTotalCredit(true);
+    setIsDefaultSorting(false);
+  };
+
+  const handleDefaultSort = () => {
+    setIsSortedByOldest(false);
+    setIsSortedByTotalCredit(false);
+    setIsDefaultSorting(true);
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        <Card className="flex items-center justify-between p-4 bg-blue-100">
+        <Card
+          className="flex items-center justify-between p-4 bg-blue-100 hover:bg-blue-200 transition cursor-pointer"
+          onClick={handleDefaultSort} // Default sorting
+        >
           <div className="flex items-center">
             <RefreshCwIcon className="w-6 h-6 text-blue-800" />
             <div className="ml-4">
@@ -172,9 +196,7 @@ export function Dashboard() {
         </Card>
         <Card
           className="flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 transition cursor-pointer"
-          onClick={() => {
-            setModal2Mois(true);
-          }}
+          onClick={handleSortByOldest} // Sort by oldest
         >
           <div className="flex items-center">
             <ClockIcon className="w-6 h-6 text-blue-500" />
@@ -182,17 +204,13 @@ export function Dashboard() {
               <div className="text-2xl font-bold">
                 {totalCreditOlderThanTwoMonths} TND
               </div>
-              <div className="text-sm text-gray-600">
-                Crédit total des clients ayant une date supérieure à 2 mois
-              </div>
+              <div className="text-sm text-gray-600">Les Plus anicien</div>
             </div>
           </div>
         </Card>
         <Card
           className="flex items-center justify-between p-4 bg-blue-50 hover:bg-blue-100 transition cursor-pointer"
-          onClick={() => {
-            setIsModalTop10client(true);
-          }}
+          onClick={handleSortByTotalCredit} // Sort by total credit
         >
           <div className="flex items-center">
             <ArrowUpIcon className="w-6 h-6 text-blue-500" />
@@ -200,22 +218,19 @@ export function Dashboard() {
               <div className="text-2xl font-bold">
                 {topCreditClientsTotal} TND
               </div>
-              <div className="text-sm text-gray-600">
-                Les clients les plus crédités (top 10)
-              </div>
+              <div className="text-sm text-gray-600">Les plus crédité</div>
             </div>
           </div>
         </Card>
       </div>
 
-      <div className="mt-6">
-        <div className="flex items-center justify-between">
+      <div className="mt-6 relative">
+        <div className="flex items-center">
           <Input
-            type="search"
-            placeholder="Recherche par lettre ou numéro"
-            className="w-full p-2 border rounded-md"
+            placeholder="Rechercher un client"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="mr-2"
           />
           <Button
             onClick={() => {
@@ -233,18 +248,22 @@ export function Dashboard() {
         <Table className="w-full bg-white rounded-md shadow-md">
           <TableHeader className="bg-blue-100">
             <TableRow>
-              <TableHead className="p-4">Nom</TableHead>
+              <TableHead className="p-4 text-[10px] lg:text-sm">Nom</TableHead>
               <TableHead className="p-4 hidden lg:table-cell">
                 Numéro Téléphone
               </TableHead>
-              <TableHead className="p-4">Total Crédit</TableHead>
+              <TableHead className="p-4 text-[10px] lg:text-sm">
+                Total Crédit
+              </TableHead>
               <TableHead className="p-4 hidden lg:table-cell">
                 Désignation
               </TableHead>
               <TableHead className="p-4 hidden lg:table-cell">
                 Date Dernière Crédit
               </TableHead>
-              <TableHead className="p-4">Action</TableHead>
+              <TableHead className="p-4 text-[10px] lg:text-sm">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -252,20 +271,37 @@ export function Dashboard() {
               .sort((a, b) => b.id - a.id)
               .map((client) => (
                 <TableRow key={client.id}>
-                  <TableCell className="p-4">{client.name}</TableCell>
+                  <TableCell className="p-4 text-[10px] lg:text-sm">
+                    {client.name}
+                  </TableCell>
                   <TableCell className="p-4 hidden lg:table-cell">
                     {client.num}
                   </TableCell>
-                  <TableCell className="p-4">{client.gredit}</TableCell>
+                  <TableCell
+                    className={`p-4 text-[10px] lg:text-sm ${
+                      isSortedByTotalCredit ? "text-red-500 font-bold" : ""
+                    }`}
+                  >
+                    <div className="flex gap-1">
+                      <div>{client.gredit}</div>
+                      <div>TND</div>
+                    </div>
+                  </TableCell>
                   <TableCell className="p-4 hidden lg:table-cell">
                     {client.designation}
                   </TableCell>
-                  <TableCell className="p-4 hidden lg:table-cell">
+                  <TableCell
+                    className={`p-4 hidden lg:table-cell ${
+                      isSortedByOldest ? "text-red-500 font-bold" : ""
+                    }`}
+                  >
                     {new Date(client.date).toISOString().split("T")[0]}
                   </TableCell>
                   <TableCell className="p-4 flex lg:space-x-2">
                     <Button
-                      onClick={() => handleOpenModal(client.id)}
+                      onClick={() => {
+                        router.push(`/transactions/${client.id}`);
+                      }}
                       variant="ghost"
                       size="icon"
                     >
@@ -311,23 +347,6 @@ export function Dashboard() {
           Suivant
         </Button>
       </div>
-      <ModalTransactions
-        isOpen={isModalTransactionsOpen}
-        onClose={() => setIsModalTransactionsOpen(false)}
-        id={selectedClientId}
-      />
-
-      <ModalTop10client
-        isOpen={isModalTop10client}
-        onClose={() => setIsModalTop10client(false)}
-        id={selectedClientId}
-      />
-
-      <Modal2Mois
-        isOpen={isModal2Mois}
-        onClose={() => setModal2Mois(false)}
-        id={selectedClientId}
-      />
 
       <ConfirmDeleteModal
         isOpen={isConfirmationModalOpen}

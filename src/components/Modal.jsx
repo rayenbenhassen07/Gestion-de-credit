@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
-export function Modal({ isOpen, onClose, id }) {
+export function Modal({ isOpen, onClose, onSubmit, id }) {
+  const router = useRouter();
   // State and effect hooks should be defined here at the top level
   const [currentDate, setCurrentDate] = useState("");
 
@@ -39,7 +41,9 @@ export function Modal({ isOpen, onClose, id }) {
 
       if (response.ok) {
         const result = await response.json();
-        console.log("Transaction created:", result);
+        console.log("Transaction createwwwd:", result);
+        router.push(`/`);
+
         onClose();
       } else {
         const errorData = await response.json();
