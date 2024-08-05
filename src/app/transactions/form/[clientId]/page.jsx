@@ -173,7 +173,7 @@ export default function ClientPage({ params }) {
                     </label>
                     <div className="relative">
                       <input
-                        type="date"
+                        type="datetime-local"
                         name="achat_date"
                         value={achatDate}
                         onChange={(e) => setAchatDate(e.target.value)}
@@ -212,7 +212,7 @@ export default function ClientPage({ params }) {
                     </label>
                     <div className="relative">
                       <input
-                        type="date"
+                        type="datetime-local"
                         name="acompte_date"
                         value={acompteDate}
                         onChange={(e) => setAcompteDate(e.target.value)}

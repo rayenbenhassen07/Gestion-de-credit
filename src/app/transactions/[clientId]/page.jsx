@@ -184,7 +184,17 @@ export default function ClientPage({ params }) {
                       filteredTransactions.map((transaction) => (
                         <TableRow key={transaction.id}>
                           <TableCell className="p-2 lg:p-4 text-[10px] lg:text-sm">
-                            {new Date(transaction.date).toLocaleDateString()}
+                            {new Date(transaction.date)
+                              .toLocaleString("en-CA", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                                hour12: false,
+                              })
+                              .replace(",", "")}
                           </TableCell>
                           <TableCell className="p-2 lg:p-4 text-[10px] lg:text-sm">
                             {transaction.type}/{transaction.designation}

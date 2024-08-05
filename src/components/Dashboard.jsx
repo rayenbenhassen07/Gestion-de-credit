@@ -295,7 +295,15 @@ export function Dashboard() {
                       isSortedByOldest ? "text-red-500 font-bold" : ""
                     }`}
                   >
-                    {new Date(client.date).toISOString().split("T")[0]}
+                    {new Date(client.date).toLocaleString("en-GB", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: false,
+                    })}
                   </TableCell>
                   <TableCell className="p-4 flex lg:space-x-2">
                     <Button
