@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaArrowAltCircleLeft, FaUserAlt, FaCalendarAlt } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 
 export default function ClientPage({ params }) {
@@ -10,6 +10,7 @@ export default function ClientPage({ params }) {
   const [error, setError] = useState(null);
   const [achatDate, setAchatDate] = useState("");
   const [acompteDate, setAcompteDate] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
   const router = useRouter();
 
   useEffect(() => {
@@ -38,6 +39,8 @@ export default function ClientPage({ params }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    setLoading(true); // Set loading to true
 
     const formData = new FormData(event.target);
 
@@ -97,6 +100,8 @@ export default function ClientPage({ params }) {
       router.push(`/transactions/${clientId}`);
     } catch (error) {
       console.error("Error:", error);
+    } finally {
+      setLoading(false); // Set loading to false after completion
     }
   };
 
@@ -140,12 +145,12 @@ export default function ClientPage({ params }) {
       </div>
 
       <div className="h-[700px] mt-10 flex flex-col gap-10 justify-center items-center w-full">
-        <div className="h-full  bg-gray-100 text-xs lg:text-base w-full">
+        <div className="h-full bg-gray-100 text-xs lg:text-base w-full">
           <div className="bg-white rounded-md shadow-md mb-6">
             <div className="p-4">
               <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
                 {/* Achat Section */}
-                <div className="flex  lg:space-x-4 gap-4">
+                <div className="flex lg:space-x-4 gap-4">
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
                     <label className="text-sm lg:text-lg text-red-700 font-bold">
                       Achat
@@ -184,7 +189,7 @@ export default function ClientPage({ params }) {
                 </div>
 
                 {/* Acompte Section */}
-                <div className="flex  lg:space-x-4 gap-4">
+                <div className="flex lg:space-x-4 gap-4">
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
                     <label className="text-sm lg:text-lg text-green-700 font-bold">
                       Acompte
@@ -226,8 +231,10 @@ export default function ClientPage({ params }) {
                   <Button
                     type="submit"
                     className="bg-green-500 text-white text-2xl lg:text-3xl p-10 w-full lg:w-auto"
+                    disabled={loading} // Disable button if loading
                   >
-                    Enregistrer
+                    {loading ? " Chargement.. " : "Enregistrer"}{" "}
+                    {/* Show spinner or text */}
                   </Button>
                 </div>
               </form>

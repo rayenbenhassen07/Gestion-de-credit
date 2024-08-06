@@ -5,27 +5,16 @@ export async function POST(req) {
   try {
     const { type, montant, designation, date, clientId } = await req.json();
 
-    const data = {
-      type,
-      montant: parseFloat(montant), // Ensure the montant is stored as a float
-      designation,
-      clientId,
-    };
-
-    if (date) {
-      data.date = new Date(date); // Ensure the date is in Date format
-    }
-
-    // Create the transaction
-    const newTransaction = await prisma.transaction.create({
-      data,
-    });
-
     // Find the client
     const client = await prisma.client.findUnique({
       where: { id: clientId },
     });
 
+    if (!client) {
+      return NextResponse.json({ error: "Client not found" }, { status: 404 });
+    }
+
+    // Determine the new credit balance
     let newGredit = client.gredit;
     if (type === "achat") {
       newGredit += montant;
@@ -33,18 +22,31 @@ export async function POST(req) {
       newGredit -= montant;
     }
 
-    // Update the client's gredit, date, designation, and type fields
+    // Create the transaction
+    const newTransaction = await prisma.transaction.create({
+      data: {
+        type,
+        montant: parseFloat(montant), // Ensure the montant is stored as a float
+        designation,
+        date: date ? new Date(date) : undefined, // Ensure the date is in Date format
+        clientId,
+        currentSoldeCredit: client.gredit, // Store the old credit balance
+      },
+    });
+
+    // Update the client's gredit, date, and designation
     await prisma.client.update({
       where: { id: clientId },
       data: {
         gredit: newGredit,
-        date: data.date, // Update the client's date to match the transaction's date
-        designation: data.designation, // Update the client's designation
+        date: date ? new Date(date) : undefined, // Update the client's date to match the transaction's date
+        designation, // Update the client's designation
       },
     });
 
     return NextResponse.json(newTransaction, { status: 201 });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to create transaction" },
       { status: 500 }

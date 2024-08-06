@@ -204,9 +204,9 @@ export default function ClientPage({ params }) {
                             {transaction.montant} TND
                           </TableCell>
                           <TableCell className="p-2 lg:p-4 text-[10px] lg:text-sm">
-                            {transaction.type === "acompte"
-                              ? client.gredit + transaction.montant
-                              : client.gredit - transaction.montant}{" "}
+                            {transaction.currentSoldeCredit
+                              ? transaction.currentSoldeCredit
+                              : 0}
                             TND
                           </TableCell>
                         </TableRow>

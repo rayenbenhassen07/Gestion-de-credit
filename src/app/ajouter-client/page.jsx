@@ -11,6 +11,7 @@ export default function AjouterClient() {
     designation: "",
   });
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -28,6 +29,7 @@ export default function AjouterClient() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true); // Set loading state to true
 
     try {
       const res = await fetch("/api/clients", {
@@ -47,6 +49,8 @@ export default function AjouterClient() {
     } catch (error) {
       setError("Failed to create client");
       console.error("Failed to create client", error);
+    } finally {
+      setLoading(false); // Set loading state to false after request
     }
   };
 
@@ -58,11 +62,8 @@ export default function AjouterClient() {
       >
         <FaArrowAltCircleLeft size="40" />
       </div>
-      <div className="w-full max-w-7xl  p-8 space-y-6 bg-white rounded shadow-md">
-        <h1 className="text-2xl font-bold text-center">
-          Ajouter nouveau Client
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-4 w-full ">
+      <div className="w-full max-w-7xl p-8 space-y-6 bg-white rounded shadow-md">
+        <form onSubmit={handleSubmit} className="space-y-4 w-full">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label
@@ -136,9 +137,13 @@ export default function AjouterClient() {
           {error && <p className="text-red-500">{error}</p>}
           <button
             type="submit"
-            className="w-full px-4 py-3 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600 text-lg"
+            className={`w-full px-4 py-3 font-bold text-white bg-blue-500 rounded-md hover:bg-blue-600 text-lg ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading} // Disable button if loading
           >
-            Enregistrer
+            {loading ? "Chargement en cours..." : "Enregistrer"}{" "}
+            {/* Show loading text or submit text */}
           </button>
         </form>
       </div>

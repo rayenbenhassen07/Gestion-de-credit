@@ -166,10 +166,9 @@ export default function ClientPage({ params }) {
 
       {oldClientData && (
         <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-bold mb-4">Old Client Data</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Crédit:</span> {oldClientData.credit}{" "}
+              <span className="font-bold">Achat:</span> {oldClientData.achat}{" "}
               TND
             </div>
             <div className="bg-gray-200 p-4 rounded">
@@ -177,9 +176,10 @@ export default function ClientPage({ params }) {
               {oldClientData.accompte} TND
             </div>
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Achat:</span> {oldClientData.achat}{" "}
-              TND
+              <span className="font-bold">Crédit avant app</span>{" "}
+              {oldClientData.credit} TND
             </div>
+
             <div className="bg-gray-200 p-4 rounded">
               <span className="font-bold">Reste à Payer:</span>{" "}
               {oldClientData.resteAPayer} TND

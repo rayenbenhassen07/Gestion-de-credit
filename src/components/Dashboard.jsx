@@ -18,7 +18,6 @@ export function Dashboard() {
   const router = useRouter();
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState("");
-
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
   const [selectedClientId, setSelectedClientId] = useState(null);
   const [totalCredit, setTotalCredit] = useState(0);
@@ -28,9 +27,9 @@ export function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10); // Adjust this value as needed
 
-  const [isSortedByOldest, setIsSortedByOldest] = useState(false); // Add a state for sorting by oldest
-  const [isSortedByTotalCredit, setIsSortedByTotalCredit] = useState(false); // Add a state for sorting by total credit
-  const [isDefaultSorting, setIsDefaultSorting] = useState(true); // Add a state for default sorting
+  const [isSortedByOldest, setIsSortedByOldest] = useState(false);
+  const [isSortedByTotalCredit, setIsSortedByTotalCredit] = useState(false);
+  const [isDefaultSorting, setIsDefaultSorting] = useState(true);
 
   const fetchClients = async () => {
     try {
@@ -50,7 +49,7 @@ export function Dashboard() {
 
   const fetchMetrics = async () => {
     try {
-      const res = await fetch("/api/metrics", {
+      const res = await fetch("/api/metricss", {
         headers: { "Cache-Control": "no-cache" },
       });
 
@@ -94,7 +93,6 @@ export function Dashboard() {
         setClients((prevClients) =>
           prevClients.filter((client) => client.id !== selectedClientId)
         );
-        // Refresh metrics
         await fetchMetrics();
         setIsConfirmationModalOpen(false);
       } else {
@@ -121,26 +119,31 @@ export function Dashboard() {
     );
   });
 
-  // Sort based on the current sorting state
   const sortedClients = (() => {
+    let clientsToSort = [...filteredClients];
+
     if (isSortedByOldest) {
-      return [...filteredClients].sort(
-        (a, b) => new Date(a.date) - new Date(b.date)
-      );
+      // Sort by oldest date
+      clientsToSort.sort((a, b) => new Date(a.date) - new Date(b.date));
     } else if (isSortedByTotalCredit) {
-      return [...filteredClients].sort((a, b) => b.gredit - a.gredit);
+      // Sort by total credit
+      clientsToSort.sort((a, b) => b.gredit - a.gredit);
     } else {
-      return [...filteredClients].sort(
-        (a, b) => new Date(b.date) - new Date(a.date)
-      );
+      // Default sorting (most recent date)
+      clientsToSort.sort((a, b) => new Date(b.date) - new Date(a.date));
     }
+
+    return clientsToSort;
   })();
 
   const totalPages = Math.ceil(sortedClients.length / itemsPerPage);
-  const displayedClients = sortedClients.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+
+  const displayedClients = search
+    ? sortedClients // Show all sorted clients if searching or sorting
+    : sortedClients.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+      );
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
@@ -326,22 +329,24 @@ export function Dashboard() {
       </div>
 
       {/* Pagination Controls */}
-      <div className="mt-4 flex justify-center">
-        <Button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="mx-2"
-        >
-          Précédent
-        </Button>
-        <Button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="mx-2"
-        >
-          Suivant
-        </Button>
-      </div>
+      {!search && (
+        <div className="mt-4 flex justify-center">
+          <Button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="mx-2"
+          >
+            Précédent
+          </Button>
+          <Button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="mx-2"
+          >
+            Suivant
+          </Button>
+        </div>
+      )}
 
       <ConfirmDeleteModal
         isOpen={isConfirmationModalOpen}
