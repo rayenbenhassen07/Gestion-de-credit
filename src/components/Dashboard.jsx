@@ -50,66 +50,30 @@ export function Dashboard() {
 
   const fetchMetrics = async () => {
     try {
-      const [
-        resTotalCredit,
-        resTotalCreditOlderThanTwoMonths,
-        resTopCreditClients,
-      ] = await Promise.all([
-        fetch("/api/getTotalCredit", {
-          headers: { "Cache-Control": "no-cache" },
-        }),
-        fetch("/api/getTotalCredit2Moins", {
-          headers: { "Cache-Control": "no-cache" },
-        }),
-        fetch("/api/getTotalCredit10Client", {
-          headers: { "Cache-Control": "no-cache" },
-        }),
-      ]);
+      const res = await fetch("/api/metrics", {
+        headers: { "Cache-Control": "no-cache" },
+      });
 
-      if (
-        !resTotalCredit.ok ||
-        !resTotalCreditOlderThanTwoMonths.ok ||
-        !resTopCreditClients.ok
-      ) {
-        const errorMessages = await Promise.all([
-          resTotalCredit
-            .json()
-            .catch(() => ({
-              error: "Échec de la récupération du crédit total",
-            })),
-          resTotalCreditOlderThanTwoMonths
-            .json()
-            .catch(() => ({
-              error:
-                "Échec de la récupération du crédit total supérieur à deux mois",
-            })),
-          resTopCreditClients
-            .json()
-            .catch(() => ({
-              error: "Échec de la récupération des clients les plus crédités",
-            })),
-        ]);
-
-        setError(errorMessages.map((msg) => msg.error).join(" | "));
+      if (!res.ok) {
+        const errorMsg = await res.json().catch(() => ({
+          error: "Failed to fetch metrics",
+        }));
+        setError(errorMsg.error);
         return;
       }
 
-      const [
+      const {
         totalCredit,
         totalCreditOlderThanTwoMonths,
-        { totalCredit: topCreditClientsTotal },
-      ] = await Promise.all([
-        resTotalCredit.json(),
-        resTotalCreditOlderThanTwoMonths.json(),
-        resTopCreditClients.json(),
-      ]);
+        topCreditClientsTotal,
+      } = await res.json();
 
       setTotalCredit(totalCredit);
       setTotalCreditOlderThanTwoMonths(totalCreditOlderThanTwoMonths);
       setTopCreditClientsTotal(topCreditClientsTotal);
     } catch (error) {
-      setError("Échec de la récupération des métriques");
-      console.error("Échec de la récupération des métriques", error);
+      setError("Failed to fetch metrics");
+      console.error("Failed to fetch metrics", error);
     }
   };
 
