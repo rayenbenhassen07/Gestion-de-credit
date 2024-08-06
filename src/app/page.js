@@ -7,7 +7,7 @@ export default async function Home() {
   return (
     <>
       <div className="min-h-screen w-full ">
-        <Test currentUser={currentUser} />
+        {/*<Test currentUser={currentUser} />*/}
         <Dashboard />
       </div>
     </>

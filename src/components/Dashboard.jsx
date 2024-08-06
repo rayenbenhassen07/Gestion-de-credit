@@ -217,7 +217,7 @@ export function Dashboard() {
       <div className="mt-6 relative">
         <div className="flex items-center">
           <Input
-            placeholder="Rechercher un client"
+            placeholder="Recherche par lettre ou numéro"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="mr-2"
