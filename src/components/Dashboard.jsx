@@ -50,40 +50,63 @@ export function Dashboard() {
 
   const fetchMetrics = async () => {
     try {
-      const resTotalCredit = await fetch("/api/getTotalCredit");
-      if (resTotalCredit.ok) {
-        const totalCredit = await resTotalCredit.json();
-        setTotalCredit(totalCredit);
-      } else {
-        const data = await resTotalCredit.json();
-        setError(data.error || "Échec de la récupération du crédit total");
+      const [
+        resTotalCredit,
+        resTotalCreditOlderThanTwoMonths,
+        resTopCreditClients,
+      ] = await Promise.all([
+        fetch("/api/getTotalCredit", {
+          headers: { "Cache-Control": "no-cache" },
+        }),
+        fetch("/api/getTotalCredit2Moins", {
+          headers: { "Cache-Control": "no-cache" },
+        }),
+        fetch("/api/getTotalCredit10Client", {
+          headers: { "Cache-Control": "no-cache" },
+        }),
+      ]);
+
+      if (
+        !resTotalCredit.ok ||
+        !resTotalCreditOlderThanTwoMonths.ok ||
+        !resTopCreditClients.ok
+      ) {
+        const errorMessages = await Promise.all([
+          resTotalCredit
+            .json()
+            .catch(() => ({
+              error: "Échec de la récupération du crédit total",
+            })),
+          resTotalCreditOlderThanTwoMonths
+            .json()
+            .catch(() => ({
+              error:
+                "Échec de la récupération du crédit total supérieur à deux mois",
+            })),
+          resTopCreditClients
+            .json()
+            .catch(() => ({
+              error: "Échec de la récupération des clients les plus crédités",
+            })),
+        ]);
+
+        setError(errorMessages.map((msg) => msg.error).join(" | "));
+        return;
       }
 
-      const resTotalCreditOlderThanTwoMonths = await fetch(
-        "/api/getTotalCredit2Moins"
-      );
-      if (resTotalCreditOlderThanTwoMonths.ok) {
-        const totalCreditOlderThanTwoMonths =
-          await resTotalCreditOlderThanTwoMonths.json();
-        setTotalCreditOlderThanTwoMonths(totalCreditOlderThanTwoMonths);
-      } else {
-        const data = await resTotalCreditOlderThanTwoMonths.json();
-        setError(
-          data.error ||
-            "Échec de la récupération du crédit total supérieur à deux mois"
-        );
-      }
+      const [
+        totalCredit,
+        totalCreditOlderThanTwoMonths,
+        { totalCredit: topCreditClientsTotal },
+      ] = await Promise.all([
+        resTotalCredit.json(),
+        resTotalCreditOlderThanTwoMonths.json(),
+        resTopCreditClients.json(),
+      ]);
 
-      const resTopCreditClients = await fetch("/api/getTotalCredit10Client");
-      if (resTopCreditClients.ok) {
-        const { totalCredit } = await resTopCreditClients.json();
-        setTopCreditClientsTotal(totalCredit);
-      } else {
-        const data = await resTopCreditClients.json();
-        setError(
-          data.error || "Échec de la récupération des clients les plus crédités"
-        );
-      }
+      setTotalCredit(totalCredit);
+      setTotalCreditOlderThanTwoMonths(totalCreditOlderThanTwoMonths);
+      setTopCreditClientsTotal(topCreditClientsTotal);
     } catch (error) {
       setError("Échec de la récupération des métriques");
       console.error("Échec de la récupération des métriques", error);
