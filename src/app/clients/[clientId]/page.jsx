@@ -2,11 +2,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { FaArrowAltCircleLeft, FaEye, FaUserAlt } from "react-icons/fa";
 
 import { Modal } from "@/components/Modal"; // Import the modal component
 import { ModalTransactions } from "@/components/ModalTransactions"; // Import the new modal component
-import { FaUserAlt } from "react-icons/fa";
 
 export default function ClientPage({ params }) {
   const { clientId } = params;
@@ -14,6 +13,7 @@ export default function ClientPage({ params }) {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const [isModalTransactionsOpen, setIsModalTransactionsOpen] = useState(false); // State for transactions modal
+  const [oldClientData, setOldClientData] = useState(null); // State for old client data
   const router = useRouter();
 
   useEffect(() => {
@@ -78,6 +78,27 @@ export default function ClientPage({ params }) {
     }
   };
 
+  const handleFetchOldClientData = async () => {
+    try {
+      if (oldClientData) {
+        setOldClientData(null); // Hide old client data
+        return;
+      }
+
+      const res = await fetch(`/api/oldClient/${clientId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setOldClientData(data);
+      } else {
+        const data = await res.json();
+        setError(data.error || "Failed to fetch old client data");
+      }
+    } catch (error) {
+      setError("Failed to fetch old client data");
+      console.error("Failed to fetch old client data", error);
+    }
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -98,10 +119,6 @@ export default function ClientPage({ params }) {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen font-semibold text-sm lg:font-bold lg:text-xl">
-      {/* 
-      client.designation}
-          Date Added: {new Date(client.date).toLocaleDateString()}
-      */}
       <div className="flex justify-between items-center bg-white p-4">
         <div className="flex justify-center items-center gap-8 ">
           <div onClick={handleBack} className="cursor-pointer">
@@ -131,14 +148,47 @@ export default function ClientPage({ params }) {
       </div>
 
       {client.oldCredit ? (
-        <div className="mt-20 bg-white p-4 flex justify-center items-center">
-          Solde crédit avant application : {client.oldCredit} TND
+        <div>
+          <div className="mt-20 bg-white p-4 flex justify-center items-center">
+            Solde crédit avant application : {client.oldCredit} TND{" "}
+            {client.id <= 168 && (
+              <FaEye
+                size={25}
+                className="ml-5 lg:ml-32 cursor-pointer"
+                onClick={handleFetchOldClientData}
+              />
+            )}
+          </div>
         </div>
       ) : (
         <></>
       )}
 
-      <div className="mt-20 p-4 bg-white  flex flex-col gap-10 justify-center items-center ">
+      {oldClientData && (
+        <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-lg font-bold mb-4">Old Client Data</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-gray-200 p-4 rounded">
+              <span className="font-bold">Crédit:</span> {oldClientData.credit}{" "}
+              TND
+            </div>
+            <div className="bg-gray-200 p-4 rounded">
+              <span className="font-bold">Acompte:</span>{" "}
+              {oldClientData.accompte} TND
+            </div>
+            <div className="bg-gray-200 p-4 rounded">
+              <span className="font-bold">Achat:</span> {oldClientData.achat}{" "}
+              TND
+            </div>
+            <div className="bg-gray-200 p-4 rounded">
+              <span className="font-bold">Reste à Payer:</span>{" "}
+              {oldClientData.resteAPayer} TND
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-20 p-4 bg-white flex flex-col gap-10 justify-center items-center ">
         <Button
           onClick={() => router.push(`/transactions/form/${client.id}`)}
           className="bg-green-500 w-[80%] lg:w-[50%] py-8 text-white font-bold text-xl"
@@ -148,7 +198,7 @@ export default function ClientPage({ params }) {
 
         <div>Montant crédit</div>
 
-        <div className="w-[80%] lg:w-[50%] py-8 bg-red-500 text-white text-center font-bold text-xl  ">
+        <div className="w-[80%] lg:w-[50%] py-8 bg-red-500 text-white text-center font-bold text-xl">
           {client.gredit} TND
         </div>
       </div>
