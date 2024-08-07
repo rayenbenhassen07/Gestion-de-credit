@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaArrowAltCircleLeft } from "react-icons/fa";
+import { BsArrowLeftCircleFill } from "react-icons/bs";
 
 export default function AjouterClient() {
   const [formData, setFormData] = useState({
@@ -60,7 +60,7 @@ export default function AjouterClient() {
         onClick={handleBack}
         className="absolute top-10 left-10 cursor-pointer"
       >
-        <FaArrowAltCircleLeft size="40" />
+        <BsArrowLeftCircleFill size="40" />
       </div>
       <div className="w-full max-w-7xl p-8 space-y-6 bg-white rounded shadow-md">
         <form onSubmit={handleSubmit} className="space-y-4 w-full">

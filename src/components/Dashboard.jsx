@@ -14,6 +14,40 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal"; // Import the confirmation modal
 
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 1);
+    }
+  };
+
+  return (
+    <div className="mt-4 flex justify-center items-center">
+      <Button
+        onClick={handlePreviousPage}
+        className="mx-1 border-2 border-grey-300 rounded-full"
+        disabled={currentPage === 1}
+      >
+        {"<"}
+      </Button>
+      <span className="font-bold mx-5">{currentPage}</span>
+      <Button
+        onClick={handleNextPage}
+        className="mx-1 border-2 border-grey-300 rounded-full"
+        disabled={currentPage === totalPages}
+      >
+        {">"}
+      </Button>
+    </div>
+  );
+};
+
 export function Dashboard() {
   const router = useRouter();
   const [clients, setClients] = useState([]);
@@ -336,22 +370,11 @@ export function Dashboard() {
 
       {/* Pagination Controls */}
       {!search && (
-        <div className="mt-4 flex justify-center">
-          <Button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="mx-2"
-          >
-            Précédent
-          </Button>
-          <Button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="mx-2"
-          >
-            Suivant
-          </Button>
-        </div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       )}
 
       <ConfirmDeleteModal

@@ -2,7 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FaArrowAltCircleLeft, FaEye, FaUserAlt } from "react-icons/fa";
+import { FaEye, FaUserAlt } from "react-icons/fa";
+import { BsArrowLeftCircleFill } from "react-icons/bs";
 
 import { Modal } from "@/components/Modal"; // Import the modal component
 import { ModalTransactions } from "@/components/ModalTransactions"; // Import the new modal component
@@ -100,7 +101,7 @@ export default function ClientPage({ params }) {
       <div className="flex justify-between items-center bg-white p-4">
         <div className="flex justify-center items-center gap-8 ">
           <div onClick={handleBack} className="cursor-pointer">
-            <FaArrowAltCircleLeft size="32" />
+            <BsArrowLeftCircleFill size="32" />
           </div>
           <div className="flex justify-center items-center gap-4 ">
             <div className="flex justify-center items-center gap-4">

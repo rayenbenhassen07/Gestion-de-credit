@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import { FaUserAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import { BsArrowLeftCircleFill } from "react-icons/bs";
 
 export default function ClientPage({ params }) {
   const { clientId } = params;
@@ -139,7 +140,7 @@ export default function ClientPage({ params }) {
       <div className="bg-white p-4 rounded-md shadow-md mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center">
         <div className="flex justify-center items-center gap-4 mb-4 lg:mb-0">
           <div onClick={handleBack} className="cursor-pointer">
-            <FaArrowAltCircleLeft size="24" />
+            <BsArrowLeftCircleFill size="30" />
           </div>
           <div className="flex justify-center items-center gap-2">
             <div className="flex justify-center items-center gap-2">
