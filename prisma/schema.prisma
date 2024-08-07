@@ -7,42 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Client {
-  id            Int                  @id @default(autoincrement())
-  name          String?
-  num           String?
-  gredit        Float?
-  oldCredit     Float? 
-  designation   String?
-  date          DateTime?             @default(now())
-  transactions  Transaction[]
-}
 
-model Transaction {
-  id          Int        @id @default(autoincrement())
-  type        String
-  montant     Float
-  designation String?
-  date        DateTime   @default(now())
-  clientId    Int
-  client      Client     @relation(fields: [clientId], references: [id])
-  currentSoldeCredit Float?
-
-  @@index([clientId])
-}
 
 model User {
   id       Int      @id @default(autoincrement())
   name     String?
   email    String   @unique
   password String
-}
-
-model OldClientInfo {
-  id          Int     @id @default(autoincrement())
-  name        String?
-  credit      Float?
-  accompte    Float?
-  achat       Float?
-  resteAPayer Float?
 }
