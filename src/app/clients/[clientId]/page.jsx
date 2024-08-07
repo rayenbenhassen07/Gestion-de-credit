@@ -23,7 +23,9 @@ export default function ClientPage({ params }) {
   useEffect(() => {
     const fetchClient = async () => {
       try {
-        const res = await fetch(`/api/clients/${clientId}`);
+        const res = await fetch(
+          `https://cre.otospexerp.com/api/clients/${clientId}`
+        );
         if (res.ok) {
           const data = await res.json();
           setClient(data);
@@ -52,32 +54,6 @@ export default function ClientPage({ params }) {
     setIsModalTransactionsOpen(true); // Open transactions modal
   };
 
-  const handleModalSubmit = async (data) => {
-    try {
-      const res = await fetch(`/api/clients/${clientId}/achat-acompte`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (res.ok) {
-        const result = await res.json();
-        console.log("Success:", result);
-        setIsModalOpen(false); // Close modal
-        fetchClient(); // Refetch client data
-        router.refresh();
-      } else {
-        const result = await res.json();
-        setError(result.error || "Failed to submit data");
-      }
-    } catch (error) {
-      setError("Failed to submit data");
-      console.error("Failed to submit data", error);
-    }
-  };
-
   const handleFetchOldClientData = async () => {
     try {
       if (oldClientData) {
@@ -85,7 +61,9 @@ export default function ClientPage({ params }) {
         return;
       }
 
-      const res = await fetch(`/api/oldClient/${clientId}`);
+      const res = await fetch(
+        `https://cre.otospexerp.com/api/old-clients/${clientId}`
+      );
       if (res.ok) {
         const data = await res.json();
         setOldClientData(data);

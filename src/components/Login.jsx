@@ -1,6 +1,5 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
-import { signIn } from "next-auth/react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import useAuthStore from "@/lib/store/useAuthStore";
@@ -10,23 +9,38 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
+    try {
+      const res = await fetch("https://cre.otospexerp.com/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-    if (res?.error) {
-      toast.error(res.error);
-    } else {
-      toast.success("Logged in successfully");
-      console.log(res);
+      const data = await res.json();
 
-      setIsLoggedIn(true);
-      router.push("/");
+      if (!res.ok) {
+        toast.error(data.message || "Login failed");
+      } else {
+        toast.success("Logged in successfully");
+
+        // Save the token to localStorage or cookie
+        localStorage.setItem("token", data.access_token);
+
+        setIsLoggedIn(true);
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error("An error occurred");
+      console.error(error);
     }
   };
 
@@ -59,7 +73,7 @@ export default function Login() {
               htmlFor="password"
               className="block text-sm font-medium text-gray-800"
             >
-              mot de passe
+              Mot de passe
             </label>
             <input
               id="password"

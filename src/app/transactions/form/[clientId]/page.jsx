@@ -16,7 +16,9 @@ export default function ClientPage({ params }) {
   useEffect(() => {
     const fetchClient = async () => {
       try {
-        const res = await fetch(`/api/clients/${clientId}`);
+        const res = await fetch(
+          `https://cre.otospexerp.com/api/clients/${clientId}`
+        );
         if (res.ok) {
           const data = await res.json();
           setClient(data);
@@ -56,19 +58,25 @@ export default function ClientPage({ params }) {
       type: "acompte",
       montant: parseFloat(formData.get("acompte_amount")),
       designation: formData.get("acompte_designation"),
-      date: acompteDate || new Date().toISOString(),
+      date: achatDate || new Date().toISOString(),
       clientId: parseInt(clientId),
     };
 
+    console.log("Achat Data:", achatData);
+    console.log("Acompte Data:", acompteData);
+
     try {
       if (achatData.montant && achatData.designation) {
-        const responseAchat = await fetch("/api/transactions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(achatData),
-        });
+        const responseAchat = await fetch(
+          "https://cre.otospexerp.com/api/transactions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(achatData),
+          }
+        );
 
         if (responseAchat.ok) {
           const result = await responseAchat.json();
@@ -80,13 +88,16 @@ export default function ClientPage({ params }) {
       }
 
       if (acompteData.montant && acompteData.designation) {
-        const responseAcompte = await fetch("/api/transactions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(acompteData),
-        });
+        const responseAcompte = await fetch(
+          "https://cre.otospexerp.com/api/transactions",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(acompteData),
+          }
+        );
 
         if (responseAcompte.ok) {
           const result = await responseAcompte.json();

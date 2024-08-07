@@ -33,7 +33,7 @@ export function Dashboard() {
 
   const fetchClients = async () => {
     try {
-      const res = await fetch(`/api/clients`);
+      const res = await fetch(`https://cre.otospexerp.com/api/clients`);
       if (res.ok) {
         const data = await res.json();
         setClients(data);
@@ -49,9 +49,7 @@ export function Dashboard() {
 
   const fetchMetrics = async () => {
     try {
-      const res = await fetch("/api/metricss", {
-        headers: { "Cache-Control": "no-cache" },
-      });
+      const res = await fetch("https://cre.otospexerp.com/api/statistics");
 
       if (!res.ok) {
         const errorMsg = await res.json().catch(() => ({
@@ -86,9 +84,12 @@ export function Dashboard() {
 
   const handleDeleteClient = async () => {
     try {
-      const res = await fetch(`/api/clients/${selectedClientId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://cre.otospexerp.com/api/clients/${selectedClientId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (res.ok) {
         setClients((prevClients) =>
           prevClients.filter((client) => client.id !== selectedClientId)
@@ -139,11 +140,18 @@ export function Dashboard() {
   const totalPages = Math.ceil(sortedClients.length / itemsPerPage);
 
   const displayedClients = search
-    ? sortedClients // Show all sorted clients if searching or sorting
+    ? sortedClients
     : sortedClients.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
       );
+
+  if (isSortedByTotalCredit) {
+    displayedClients.sort((a, b) => b.gredit - addEventListener.gredit);
+  }
+
+  // If you want to log displayedClients as well
+  console.log("displayedClients = ", displayedClients);
 
   const handlePageChange = (page) => {
     if (page > 0 && page <= totalPages) {
@@ -257,73 +265,71 @@ export function Dashboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {displayedClients
-              .sort((a, b) => b.id - a.id)
-              .map((client) => (
-                <TableRow key={client.id}>
-                  <TableCell className="p-4 text-[10px] lg:text-sm">
-                    {client.name}
-                  </TableCell>
-                  <TableCell className="p-4 hidden lg:table-cell">
-                    {client.num}
-                  </TableCell>
-                  <TableCell
-                    className={`p-4 text-[10px] lg:text-sm ${
-                      isSortedByTotalCredit ? "text-red-500 font-bold" : ""
-                    }`}
+            {displayedClients.map((client) => (
+              <TableRow key={client.id}>
+                <TableCell className="p-4 text-[10px] lg:text-sm">
+                  {client.name}
+                </TableCell>
+                <TableCell className="p-4 hidden lg:table-cell">
+                  {client.num}
+                </TableCell>
+                <TableCell
+                  className={`p-4 text-[10px] lg:text-sm ${
+                    isSortedByTotalCredit ? "text-red-500 font-bold" : ""
+                  }`}
+                >
+                  <div className="flex gap-1">
+                    <div>{client.gredit}</div>
+                    <div>TND</div>
+                  </div>
+                </TableCell>
+                <TableCell className="p-4 hidden lg:table-cell">
+                  {client.designation}
+                </TableCell>
+                <TableCell
+                  className={`p-4 hidden lg:table-cell ${
+                    isSortedByOldest ? "text-red-500 font-bold" : ""
+                  }`}
+                >
+                  {new Date(client.date).toLocaleString("en-GB", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                  })}
+                </TableCell>
+                <TableCell className="p-4 flex lg:space-x-2">
+                  <Button
+                    onClick={() => {
+                      router.push(`/transactions/${client.id}`);
+                    }}
+                    variant="ghost"
+                    size="icon"
                   >
-                    <div className="flex gap-1">
-                      <div>{client.gredit}</div>
-                      <div>TND</div>
-                    </div>
-                  </TableCell>
-                  <TableCell className="p-4 hidden lg:table-cell">
-                    {client.designation}
-                  </TableCell>
-                  <TableCell
-                    className={`p-4 hidden lg:table-cell ${
-                      isSortedByOldest ? "text-red-500 font-bold" : ""
-                    }`}
+                    <RefreshCwIcon className="w-4 h-4 text-gray-500" />
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      router.push(`/clients/${client.id}`);
+                    }}
+                    variant="ghost"
+                    size="icon"
                   >
-                    {new Date(client.date).toLocaleString("en-GB", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                      hour12: false,
-                    })}
-                  </TableCell>
-                  <TableCell className="p-4 flex lg:space-x-2">
-                    <Button
-                      onClick={() => {
-                        router.push(`/transactions/${client.id}`);
-                      }}
-                      variant="ghost"
-                      size="icon"
-                    >
-                      <RefreshCwIcon className="w-4 h-4 text-gray-500" />
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        router.push(`/clients/${client.id}`);
-                      }}
-                      variant="ghost"
-                      size="icon"
-                    >
-                      <FilePenIcon className="w-4 h-4 text-gray-500" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleOpenConfirmationModal(client.id)}
-                    >
-                      <TrashIcon className="w-4 h-4 text-gray-500" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    <FilePenIcon className="w-4 h-4 text-gray-500" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleOpenConfirmationModal(client.id)}
+                  >
+                    <TrashIcon className="w-4 h-4 text-gray-500" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
