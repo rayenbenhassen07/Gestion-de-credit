@@ -43,7 +43,7 @@ export default function ClientPage({ params }) {
   const handleBack = () => {
     router.push(`/clients/${clientId}`);
   };
-
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -90,6 +90,9 @@ export default function ClientPage({ params }) {
           const errorData = await responseAchat.json();
           console.error("Error creating achat transaction:", errorData);
         }
+
+        // Add delay between requests
+        await delay(500); // Delay for 500ms
       }
 
       if (acompteData.montant && acompteData.designation) {
@@ -142,16 +145,16 @@ export default function ClientPage({ params }) {
   return (
     <div className="p-4 bg-gray-100 min-h-screen text-xs lg:text-base">
       <div className="bg-white p-4 rounded-md shadow-md mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center">
-        <div className="flex justify-center items-center gap-4 mb-4 lg:mb-0">
+        <div className="flex justify-center items-center gap-2 mb-4 lg:mb-0">
           <div onClick={handleBack} className="cursor-pointer">
-            <BsArrowLeftCircleFill size="30" />
+            <BsArrowLeftCircleFill className="text-xl lg:text-3xl" />
           </div>
           <div className="flex justify-center items-center gap-2">
             <div className="flex justify-center items-center gap-2">
               <div>
-                <FaUserAlt size="24" />
+                <FaUserAlt className="text-xl lg:text-3xl" />
               </div>
-              <div className="flex flex-col items-start">
+              <div className="flex flex-col items-start text-xs lg:text-sm">
                 <div>{client.name}</div>
                 <div>{client.num}</div>
               </div>
@@ -168,28 +171,28 @@ export default function ClientPage({ params }) {
                 {/* Achat Section */}
                 <div className="flex lg:space-x-4 gap-4">
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
-                    <label className="text-sm lg:text-lg text-red-700 font-bold">
+                    <label className="text-xs lg:text-lg text-red-700 font-bold">
                       Achat
                     </label>
                     <input
                       type="number"
                       name="achat_amount"
                       placeholder="TND"
-                      className="p-3 border rounded-md text-sm lg:text-lg w-full"
+                      className="p-3 border rounded-md text-xs lg:text-lg w-full"
                     />
                   </div>
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
-                    <label className="text-sm lg:text-lg text-gray-700">
+                    <label className="text-xs lg:text-lg text-gray-700">
                       Désignation
                     </label>
                     <input
                       type="text"
                       name="achat_designation"
-                      className="p-3 border rounded-md text-sm lg:text-lg w-full"
+                      className="p-3 border rounded-md text-xs lg:text-lg w-full"
                     />
                   </div>
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
-                    <label className="text-sm lg:text-lg text-gray-700">
+                    <label className="text-xs lg:text-lg text-gray-700">
                       Date
                     </label>
                     <div className="relative">
@@ -198,7 +201,7 @@ export default function ClientPage({ params }) {
                         name="achat_date"
                         value={achatDate}
                         onChange={(e) => setAchatDate(e.target.value)}
-                        className="p-3 border rounded-md text-sm lg:text-lg w-20 lg:w-full lg:pl-10"
+                        className="p-3 border rounded-md text-xs lg:text-lg w-20 lg:w-full lg:pl-10"
                       />
                     </div>
                   </div>
@@ -207,28 +210,28 @@ export default function ClientPage({ params }) {
                 {/* Acompte Section */}
                 <div className="flex lg:space-x-4 gap-4">
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
-                    <label className="text-sm lg:text-lg text-green-700 font-bold">
+                    <label className="text-xs lg:text-lg text-green-700 font-bold">
                       Acompte
                     </label>
                     <input
                       type="number"
                       name="acompte_amount"
                       placeholder="TND"
-                      className="p-3 border rounded-md text-sm lg:text-lg w-full"
+                      className="p-3 border rounded-md text-xs lg:text-lg w-full"
                     />
                   </div>
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
-                    <label className="text-sm lg:text-lg text-gray-700">
+                    <label className="text-xs lg:text-lg text-gray-700">
                       Désignation
                     </label>
                     <input
                       type="text"
                       name="acompte_designation"
-                      className="p-3 border rounded-md text-sm lg:text-lg w-full"
+                      className="p-3 border rounded-md text-xs lg:text-lg w-full"
                     />
                   </div>
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
-                    <label className="text-sm lg:text-lg text-gray-700">
+                    <label className="text-xs lg:text-lg text-gray-700">
                       Date
                     </label>
                     <div className="relative">
@@ -237,16 +240,16 @@ export default function ClientPage({ params }) {
                         name="acompte_date"
                         value={acompteDate}
                         onChange={(e) => setAcompteDate(e.target.value)}
-                        className="p-3 border rounded-md text-sm lg:text-lg w-20 lg:w-full lg:pl-10"
+                        className="p-3 border rounded-md text-xs lg:text-lg w-20 lg:w-full lg:pl-10"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="flex justify-center">
+                <div className="flex justify-center ">
                   <Button
                     type="submit"
-                    className="bg-green-500 text-white p-5 lg:p-8 rounded lg:text-xl text-3xl"
+                    className="bg-blue-500 text-white p-5 lg:p-8 rounded lg:text-3xl text-xl"
                   >
                     {loading ? "Chargement en cours..." : "Enregistrer"}
                   </Button>

@@ -315,32 +315,35 @@ export function Dashboard() {
         <Table className="w-full bg-white rounded-md shadow-md">
           <TableHeader className="bg-blue-100">
             <TableRow>
-              <TableHead className="p-4 text-[10px] lg:text-sm">Nom</TableHead>
+              <TableHead className="p-4  text-[10px] lg:text-sm">Nom</TableHead>
               <TableHead className="p-4 hidden lg:table-cell ">
                 Numéro Téléphone
               </TableHead>
-              <TableHead className="p-4 text-[10px] lg:text-sm cursor-pointer">
+              <TableHead className="p-4  text-[10px] lg:text-sm cursor-pointer">
                 <div
-                  className="flex  gap-2"
+                  className="flex  items-center  gap-2"
                   onClick={() => setCredit(!isCredit)}
                 >
-                  <div>Total Crédit</div>
+                  <div className="flex gap-1">
+                    <div>Total</div>
+                    <div>Crédit</div>
+                  </div>
                   <LuArrowDownUp />
                 </div>
               </TableHead>
-              <TableHead className="p-4 hidden lg:table-cell">
+              <TableHead className="p-4 hidden lg:table-cell ">
                 Désignation
               </TableHead>
               <TableHead
-                className="p-4 cursor-pointer hidden lg:table-cell"
+                className="p-4 cursor-pointer hidden lg:table-cell "
                 onClick={() => setDate(!isDate)}
               >
-                <div className="flex  gap-2">
+                <div className="flex   gap-2">
                   <div>Date Dernière Crédit</div>
                   <LuArrowDownUp />
                 </div>
               </TableHead>
-              <TableHead className="p-4 text-[10px] lg:text-sm">
+              <TableHead className="p-4 flex justify-center items-center text-[10px] lg:text-sm">
                 Action
               </TableHead>
             </TableRow>
@@ -392,7 +395,7 @@ export function Dashboard() {
                       hour12: false,
                     })}
                   </TableCell>
-                  <TableCell className="p-4 flex lg:space-x-2">
+                  <TableCell className="p-4 flex justify-center items-center lg:space-x-2">
                     <Button
                       onClick={() => {
                         router.push(`/transactions/trans/${client.id}`);

@@ -97,18 +97,18 @@ export default function ClientPage({ params }) {
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen font-semibold text-sm lg:font-bold lg:text-xl">
-      <div className="flex justify-between items-center bg-white p-4">
-        <div className="flex justify-center items-center gap-8 ">
+    <div className="p-2 lg:p-6 bg-gray-100 min-h-screen font-semibold text-sm lg:font-bold lg:text-xl">
+      <div className="flex justify-between items-center bg-white p-2">
+        <div className="flex justify-center items-center gap-2 ">
           <div onClick={handleBack} className="cursor-pointer">
-            <BsArrowLeftCircleFill size="32" />
+            <BsArrowLeftCircleFill className="text-xl lg:text-3xl" />
           </div>
           <div className="flex justify-center items-center gap-4 ">
             <div className="flex justify-center items-center gap-4">
               <div className="">
-                <FaUserAlt size="32" />
+                <FaUserAlt className="text-xl lg:text-3xl" />
               </div>
-              <div className="flex flex-col items-start ">
+              <div className="flex flex-col items-start text-xs lg:text-base ">
                 <div>{client.name}</div>
                 <div>{client.num}</div>
               </div>
@@ -120,7 +120,7 @@ export default function ClientPage({ params }) {
           onClick={() => {
             router.push(`/transactions/${client.id}`);
           }}
-          className="bg-blue-500 text-white"
+          className="bg-blue-500 text-white text-xs lg:text-sm"
         >
           Historique
         </Button>
@@ -128,12 +128,11 @@ export default function ClientPage({ params }) {
 
       {client.oldCredit ? (
         <div>
-          <div className="mt-20 bg-white p-4 flex justify-center items-center">
+          <div className="mt-20 text-xs lg:text-base bg-white p-4 flex justify-center items-center">
             Solde crédit avant application : {client.oldCredit} TND{" "}
             {client.id <= 168 && (
               <FaEye
-                size={25}
-                className="ml-5 lg:ml-32 cursor-pointer"
+                className="ml-5 lg:ml-32 cursor-pointer text-xl lg:text-3xl"
                 onClick={handleFetchOldClientData}
               />
             )}
@@ -167,17 +166,17 @@ export default function ClientPage({ params }) {
         </div>
       )}
 
-      <div className="mt-20 p-4 bg-white flex flex-col gap-10 justify-center items-center ">
+      <div className="mt-20 p-4 rounded-lg bg-white flex flex-col gap-10 justify-center items-center ">
         <Button
           onClick={() => router.push(`/transactions/form/${client.id}`)}
-          className="bg-green-500 w-[80%] lg:w-[50%] py-8 text-white font-bold text-xl"
+          className="bg-black w-[80%] lg:w-[50%] py-8 text-white font-boldtext-sm lg:text-xl"
         >
           Achat & Acompte
         </Button>
 
-        <div>Montant crédit</div>
+        <div className="text-xs lg:text-base">Montant crédit</div>
 
-        <div className="w-[80%] lg:w-[50%] py-8 bg-red-500 text-white text-center font-bold text-xl">
+        <div className="w-[80%] lg:w-[50%] py-4 rounded-lg lg:py-8 bg-red-500 text-white text-center font-bold text-sm lg:text-xl">
           {client.gredit} TND
         </div>
       </div>

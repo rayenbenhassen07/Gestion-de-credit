@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaArrowAltCircleLeft, FaUserAlt } from "react-icons/fa";
+import { FaUserAlt } from "react-icons/fa";
+import { BsArrowLeftCircleFill } from "react-icons/bs";
 import {
   Table,
   TableHeader,
@@ -120,7 +121,7 @@ export default function ClientPage({ params }) {
       <div className="bg-white p-4 rounded-md shadow-md mb-6 flex flex-col lg:flex-row justify-between items-start lg:items-center">
         <div className="flex justify-center items-center gap-4 mb-4 lg:mb-0">
           <div onClick={handleBack} className="cursor-pointer">
-            <FaArrowAltCircleLeft size="24" />
+            <BsArrowLeftCircleFill size="24" />
           </div>
           <div className="flex justify-center items-center gap-2">
             <div className="flex justify-center items-center gap-2">
@@ -161,24 +162,24 @@ export default function ClientPage({ params }) {
         </div>
       </div>
 
-      <div className="bg-rose-500 h-[700px] mt-10 flex flex-col gap-10 justify-center items-center w-full">
+      <div className=" h-[700px] mt-10 flex flex-col gap-10 justify-center items-center w-full">
         <div className="h-full bg-gray-100 text-xs lg:text-base w-full">
           <div className="bg-white  rounded-md shadow-md mb-6">
-            <div className="overflow-x-auto">
-              <div className="max-h-[600px] overflow-y-auto bg-white p-4 rounded-md shadow-md">
-                <Table className="w-full">
+            <div className="max-h-[600px] overflow-y-auto bg-white rounded-md shadow-md">
+              <div className="overflow-x-auto">
+                <Table className="min-w-[600px]">
                   <TableHeader className="bg-blue-100">
                     <TableRow>
-                      <TableHead className="p-2 lg:p-4 text-[10px] lg:text-sm">
+                      <TableHead className="p-1  lg:p-2 text-xs lg:text-base w-1/6 ">
                         Date
                       </TableHead>
-                      <TableHead className="p-2 lg:p-4 text-[10px] lg:text-sm">
+                      <TableHead className="p-1 lg:p-2 text-xs lg:text-base w-1/6 ">
                         Nature/Designation
                       </TableHead>
-                      <TableHead className="p-2 lg:p-4 text-[10px] lg:text-sm">
+                      <TableHead className="p-1 lg:p-2 text-xs lg:text-base  w-1/6">
                         Montant
                       </TableHead>
-                      <TableHead className="p-2 lg:p-4 text-[10px] lg:text-sm">
+                      <TableHead className="p-1 lg:p-2 text-xs lg:text-base w-1/6 ">
                         Solde Crédit
                       </TableHead>
                     </TableRow>
@@ -192,7 +193,7 @@ export default function ClientPage({ params }) {
                         )
                         .map((transaction) => (
                           <TableRow key={transaction.id}>
-                            <TableCell className="p-2 lg:p-4 text-[10px] lg:text-sm">
+                            <TableCell className="p-3 lg:p-2 text-xs lg:text-base w-1/6">
                               {new Date(transaction.date)
                                 .toLocaleString("en-CA", {
                                   year: "numeric",
@@ -205,17 +206,17 @@ export default function ClientPage({ params }) {
                                 })
                                 .replace(",", "")}
                             </TableCell>
-                            <TableCell className="p-2 lg:p-4 text-[10px] lg:text-sm">
-                              {transaction.type}/{transaction.designation}
+                            <TableCell className="p-1 lg:p-2 text-xs lg:text-base w-1/6">
+                              {transaction.type} / {transaction.designation}
                             </TableCell>
-                            <TableCell className="p-2 lg:p-4 text-[10px] lg:text-sm">
+                            <TableCell className="p-1 lg:p-2 text-xs lg:text-base w-1/6">
                               {transaction.type === "achat" ? "" : "-"}
                               {transaction.montant} TND
                             </TableCell>
-                            <TableCell className="p-2 lg:p-4 text-[10px] lg:text-sm">
+                            <TableCell className="p-1 lg:p-2 text-xs lg:text-base w-1/6">
                               {transaction.currentSoldeCredit
                                 ? transaction.currentSoldeCredit
-                                : 0}
+                                : 0}{" "}
                               TND
                             </TableCell>
                           </TableRow>
@@ -224,7 +225,7 @@ export default function ClientPage({ params }) {
                       <TableRow>
                         <TableCell
                           colSpan="4"
-                          className="p-2 lg:p-4 text-center"
+                          className="p-1 lg:p-2 text-center text-[8px] lg:text-lg"
                         >
                           Aucune transaction trouvée
                         </TableCell>
