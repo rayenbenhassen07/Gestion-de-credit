@@ -9,8 +9,12 @@ export default function ClientPage({ params }) {
   const { clientId } = params;
   const [client, setClient] = useState(null);
   const [error, setError] = useState(null);
-  const [achatDate, setAchatDate] = useState("");
-  const [acompteDate, setAcompteDate] = useState("");
+  const [achatDate, setAchatDate] = useState(
+    new Date().toISOString().slice(0, 16)
+  ); // Set initial state to current date
+  const [acompteDate, setAcompteDate] = useState(
+    new Date().toISOString().slice(0, 16)
+  ); // Set initial state to current date
   const [loading, setLoading] = useState(false); // Add loading state
   const router = useRouter();
 
@@ -59,7 +63,7 @@ export default function ClientPage({ params }) {
       type: "acompte",
       montant: parseFloat(formData.get("acompte_amount")),
       designation: formData.get("acompte_designation"),
-      date: achatDate || new Date().toISOString(),
+      date: acompteDate || new Date().toISOString(),
       clientId: parseInt(clientId),
     };
 
@@ -170,7 +174,7 @@ export default function ClientPage({ params }) {
                     <input
                       type="number"
                       name="achat_amount"
-                      placeholder="TDN"
+                      placeholder="TND"
                       className="p-3 border rounded-md text-sm lg:text-lg w-full"
                     />
                   </div>
@@ -209,7 +213,7 @@ export default function ClientPage({ params }) {
                     <input
                       type="number"
                       name="acompte_amount"
-                      placeholder="TDN"
+                      placeholder="TND"
                       className="p-3 border rounded-md text-sm lg:text-lg w-full"
                     />
                   </div>
@@ -239,14 +243,12 @@ export default function ClientPage({ params }) {
                   </div>
                 </div>
 
-                <div className="w-full justify-center items-center text-center">
+                <div className="flex justify-center">
                   <Button
                     type="submit"
-                    className="bg-green-500 text-white text-2xl lg:text-3xl p-10 w-full lg:w-auto"
-                    disabled={loading} // Disable button if loading
+                    className="bg-green-500 text-white p-5 lg:p-8 rounded lg:text-xl text-3xl"
                   >
-                    {loading ? " Chargement.. " : "Enregistrer"}{" "}
-                    {/* Show spinner or text */}
+                    {loading ? "Loading..." : "Enregistrer"}
                   </Button>
                 </div>
               </form>

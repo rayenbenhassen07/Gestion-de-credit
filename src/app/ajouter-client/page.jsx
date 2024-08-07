@@ -42,12 +42,9 @@ export default function AjouterClient() {
 
       if (res.ok) {
         router.push("/"); // Redirect to home page or any other page after success
-      } else {
-        const data = await res.json();
-        setError(data.error || "Failed to create client");
       }
     } catch (error) {
-      setError("Failed to create client");
+      setError("Numéro de téléphone existe déjà");
       console.error("Failed to create client", error);
     } finally {
       setLoading(false); // Set loading state to false after request
@@ -90,7 +87,7 @@ export default function AjouterClient() {
                 Numéro téléphone
               </label>
               <input
-                type="text"
+                type="number"
                 id="num"
                 name="num"
                 value={formData.num}

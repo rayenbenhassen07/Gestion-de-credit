@@ -94,7 +94,7 @@ export default function ClientPage({ params }) {
   }, [searchTerm, dateFilter, typeFilter, transactions]);
 
   const handleBack = () => {
-    router.push(`/clients/${clientId}`);
+    router.push(`/`);
   };
 
   if (error) {

@@ -13,6 +13,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal"; // Import the confirmation modal
+import { LuArrowDownUp } from "react-icons/lu";
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const handlePreviousPage = () => {
@@ -64,6 +65,9 @@ export function Dashboard() {
   const [isSortedByOldest, setIsSortedByOldest] = useState(false);
   const [isSortedByTotalCredit, setIsSortedByTotalCredit] = useState(false);
   const [isDefaultSorting, setIsDefaultSorting] = useState(true);
+  const [pagin, setPagin] = useState(false);
+  const [isDate, setDate] = useState(false);
+  const [isCredit, setCredit] = useState(false);
 
   const fetchClients = async () => {
     try {
@@ -158,11 +162,19 @@ export function Dashboard() {
     let clientsToSort = [...filteredClients];
 
     if (isSortedByOldest) {
-      // Sort by oldest date
-      clientsToSort.sort((a, b) => new Date(a.date) - new Date(b.date));
+      // Get current date and calculate the date 2 months ago
+      const twoMonthsAgo = new Date();
+      twoMonthsAgo.setMonth(twoMonthsAgo.getMonth() - 2);
+
+      // Filter clients older than 2 months and sort by oldest date
+      clientsToSort = clientsToSort
+        .filter((client) => new Date(client.date) < twoMonthsAgo)
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 10);
     } else if (isSortedByTotalCredit) {
-      // Sort by total credit
+      // Sort by total credit and take top 10
       clientsToSort.sort((a, b) => b.gredit - a.gredit);
+      clientsToSort = clientsToSort.slice(0, 10);
     } else {
       // Default sorting (most recent date)
       clientsToSort.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -171,18 +183,34 @@ export function Dashboard() {
     return clientsToSort;
   })();
 
-  const totalPages = Math.ceil(sortedClients.length / itemsPerPage);
+  const afterSorting = (() => {
+    let clientsToSort = [...sortedClients];
 
-  const displayedClients = search
-    ? sortedClients
-    : sortedClients.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-      );
+    if (isDate) {
+      clientsToSort.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
+    if (isCredit) {
+      clientsToSort.sort((a, b) => b.gredit - a.gredit);
+    }
+
+    return clientsToSort;
+  })();
+
+  const totalPages = Math.ceil(afterSorting.length / itemsPerPage);
+
+  const displayedClients =
+    search || pagin
+      ? afterSorting
+      : afterSorting.slice(
+          (currentPage - 1) * itemsPerPage,
+          currentPage * itemsPerPage
+        );
 
   if (isSortedByTotalCredit) {
     displayedClients.sort((a, b) => b.gredit - addEventListener.gredit);
   }
+  console.log("sss=", pagin);
 
   // If you want to log displayedClients as well
   console.log("displayedClients = ", displayedClients);
@@ -197,11 +225,13 @@ export function Dashboard() {
     setIsSortedByOldest(true);
     setIsSortedByTotalCredit(false);
     setIsDefaultSorting(false);
+    setPagin(true);
   };
 
   const handleSortByTotalCredit = () => {
     setIsSortedByOldest(false);
     setIsSortedByTotalCredit(true);
+    setPagin(true);
     setIsDefaultSorting(false);
   };
 
@@ -209,6 +239,7 @@ export function Dashboard() {
     setIsSortedByOldest(false);
     setIsSortedByTotalCredit(false);
     setIsDefaultSorting(true);
+    setPagin(false);
   };
 
   return (
@@ -236,7 +267,9 @@ export function Dashboard() {
               <div className="text-2xl font-bold">
                 {totalCreditOlderThanTwoMonths} TND
               </div>
-              <div className="text-sm text-gray-600">Les Plus anicien</div>
+              <div className="text-sm text-gray-600">
+                Les 10 clients les plus anciens de plus de 2 mois
+              </div>
             </div>
           </div>
         </Card>
@@ -250,7 +283,9 @@ export function Dashboard() {
               <div className="text-2xl font-bold">
                 {topCreditClientsTotal} TND
               </div>
-              <div className="text-sm text-gray-600">Les plus crédité</div>
+              <div className="text-sm text-gray-600">
+                Les 10 clients ayant le plus de crédit
+              </div>
             </div>
           </div>
         </Card>
@@ -281,17 +316,29 @@ export function Dashboard() {
           <TableHeader className="bg-blue-100">
             <TableRow>
               <TableHead className="p-4 text-[10px] lg:text-sm">Nom</TableHead>
-              <TableHead className="p-4 hidden lg:table-cell">
+              <TableHead className="p-4 hidden lg:table-cell ">
                 Numéro Téléphone
               </TableHead>
-              <TableHead className="p-4 text-[10px] lg:text-sm">
-                Total Crédit
+              <TableHead className="p-4 text-[10px] lg:text-sm cursor-pointer">
+                <div
+                  className="flex  gap-2"
+                  onClick={() => setCredit(!isCredit)}
+                >
+                  <div>Total Crédit</div>
+                  <LuArrowDownUp />
+                </div>
               </TableHead>
               <TableHead className="p-4 hidden lg:table-cell">
                 Désignation
               </TableHead>
-              <TableHead className="p-4 hidden lg:table-cell">
-                Date Dernière Crédit
+              <TableHead
+                className="p-4 cursor-pointer hidden lg:table-cell"
+                onClick={() => setDate(!isDate)}
+              >
+                <div className="flex  gap-2">
+                  <div>Date Dernière Crédit</div>
+                  <LuArrowDownUp />
+                </div>
               </TableHead>
               <TableHead className="p-4 text-[10px] lg:text-sm">
                 Action
@@ -299,77 +346,88 @@ export function Dashboard() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {displayedClients.map((client) => (
-              <TableRow key={client.id}>
-                <TableCell className="p-4 text-[10px] lg:text-sm">
-                  {client.name}
-                </TableCell>
-                <TableCell className="p-4 hidden lg:table-cell">
-                  {client.num}
-                </TableCell>
+            {displayedClients.length === 0 ? (
+              <TableRow>
                 <TableCell
-                  className={`p-4 text-[10px] lg:text-sm ${
-                    isSortedByTotalCredit ? "text-red-500 font-bold" : ""
-                  }`}
+                  colSpan={6}
+                  className="p-4 text-center text-gray-500"
                 >
-                  <div className="flex gap-1">
-                    <div>{client.gredit}</div>
-                    <div>TND</div>
-                  </div>
-                </TableCell>
-                <TableCell className="p-4 hidden lg:table-cell">
-                  {client.designation}
-                </TableCell>
-                <TableCell
-                  className={`p-4 hidden lg:table-cell ${
-                    isSortedByOldest ? "text-red-500 font-bold" : ""
-                  }`}
-                >
-                  {new Date(client.date).toLocaleString("en-GB", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                    hour12: false,
-                  })}
-                </TableCell>
-                <TableCell className="p-4 flex lg:space-x-2">
-                  <Button
-                    onClick={() => {
-                      router.push(`/transactions/${client.id}`);
-                    }}
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <RefreshCwIcon className="w-4 h-4 text-gray-500" />
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      router.push(`/clients/${client.id}`);
-                    }}
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <FilePenIcon className="w-4 h-4 text-gray-500" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleOpenConfirmationModal(client.id)}
-                  >
-                    <TrashIcon className="w-4 h-4 text-gray-500" />
-                  </Button>
+                  Aucun client trouvé.
                 </TableCell>
               </TableRow>
-            ))}
+            ) : (
+              displayedClients.map((client) => (
+                <TableRow key={client.id}>
+                  <TableCell className="p-4 text-[10px] lg:text-sm">
+                    {client.name}
+                  </TableCell>
+                  <TableCell className="p-4 hidden lg:table-cell">
+                    {client.num}
+                  </TableCell>
+                  <TableCell
+                    className={`p-4 text-[10px] lg:text-sm ${
+                      isSortedByTotalCredit ? "text-red-500 font-bold" : ""
+                    }`}
+                  >
+                    <div className="flex gap-1">
+                      <div>{client.gredit}</div>
+                      <div>TND</div>
+                    </div>
+                  </TableCell>
+                  <TableCell className="p-4 hidden lg:table-cell">
+                    {client.designation}
+                  </TableCell>
+                  <TableCell
+                    className={`p-4 hidden lg:table-cell ${
+                      isSortedByOldest ? "text-red-500 font-bold" : ""
+                    }`}
+                  >
+                    {new Date(client.date).toLocaleString("en-GB", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                      hour12: false,
+                    })}
+                  </TableCell>
+                  <TableCell className="p-4 flex lg:space-x-2">
+                    <Button
+                      onClick={() => {
+                        router.push(`/transactions/trans/${client.id}`);
+                      }}
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <RefreshCwIcon className="w-4 h-4 text-gray-500" />
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        router.push(`/clients/${client.id}`);
+                      }}
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <FilePenIcon className="w-4 h-4 text-gray-500" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleOpenConfirmationModal(client.id)}
+                    >
+                      <TrashIcon className="w-4 h-4 text-gray-500" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </div>
 
       {/* Pagination Controls */}
-      {!search && (
+      {!pagin && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
