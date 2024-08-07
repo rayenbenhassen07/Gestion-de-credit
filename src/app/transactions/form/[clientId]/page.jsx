@@ -248,7 +248,7 @@ export default function ClientPage({ params }) {
                     type="submit"
                     className="bg-green-500 text-white p-5 lg:p-8 rounded lg:text-xl text-3xl"
                   >
-                    {loading ? "Loading..." : "Enregistrer"}
+                    {loading ? "Chargement en cours..." : "Enregistrer"}
                   </Button>
                 </div>
               </form>
