@@ -44,6 +44,7 @@ export default function ClientPage({ params }) {
     router.push(`/clients/${clientId}`);
   };
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -71,9 +72,15 @@ export default function ClientPage({ params }) {
     console.log("Acompte Data:", acompteData);
 
     try {
-      if (achatData.montant && achatData.designation) {
+      // Validate inputs before making requests
+      if (!achatData.montant && !acompteData.montant) {
+        console.error("Error: Both achat and acompte amounts are required.");
+        return; // Stop further execution
+      }
+
+      if (achatData.montant) {
         const responseAchat = await fetch(
-          "https://cre.otospexerp.com/api/transactions",
+          "http://localhost:8000/api/transactions",
           {
             method: "POST",
             headers: {
@@ -95,9 +102,9 @@ export default function ClientPage({ params }) {
         await delay(500); // Delay for 500ms
       }
 
-      if (acompteData.montant && acompteData.designation) {
+      if (acompteData.montant) {
         const responseAcompte = await fetch(
-          "https://cre.otospexerp.com/api/transactions",
+          "http://localhost:8000/api/transactions",
           {
             method: "POST",
             headers: {
@@ -116,6 +123,7 @@ export default function ClientPage({ params }) {
         }
       }
 
+      // Navigate to the transactions page
       router.push(`/transactions/${clientId}`);
     } catch (error) {
       console.error("Error:", error);

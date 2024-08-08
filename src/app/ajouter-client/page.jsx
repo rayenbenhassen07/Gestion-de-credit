@@ -136,7 +136,6 @@ export default function AjouterClient() {
                   name="designation"
                   value={formData.designation}
                   onChange={handleChange}
-                  required
                   className="block w-full px-6 py-3 mt-1 text-lg border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>

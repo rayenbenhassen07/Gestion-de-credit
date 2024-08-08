@@ -154,7 +154,7 @@ export function Dashboard() {
     return (
       client.name.toLowerCase().includes(lowerCaseSearch) ||
       client.num.toLowerCase().includes(lowerCaseSearch) ||
-      client.designation.toLowerCase().includes(lowerCaseSearch)
+      (client.designation?.toLowerCase() || "").includes(lowerCaseSearch)
     );
   });
 
