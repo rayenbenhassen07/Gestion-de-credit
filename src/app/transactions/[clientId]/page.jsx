@@ -187,10 +187,7 @@ export default function ClientPage({ params }) {
                   <TableBody>
                     {filteredTransactions.length > 0 ? (
                       filteredTransactions
-                        .sort(
-                          (a, b) =>
-                            new Date(b.created_at) - new Date(a.created_at)
-                        )
+                        .sort((a, b) => new Date(a.date) - new Date(b.date))
                         .map((transaction) => (
                           <TableRow key={transaction.id}>
                             <TableCell className="p-3 lg:p-2 text-xs lg:text-base w-1/6">
