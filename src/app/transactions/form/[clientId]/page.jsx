@@ -80,7 +80,7 @@ export default function ClientPage({ params }) {
 
       if (achatData.montant) {
         const responseAchat = await fetch(
-          "http://localhost:8000/api/transactions",
+          "https://cre.otospexerp.com/api/transactions",
           {
             method: "POST",
             headers: {
@@ -104,7 +104,7 @@ export default function ClientPage({ params }) {
 
       if (acompteData.montant) {
         const responseAcompte = await fetch(
-          "http://localhost:8000/api/transactions",
+          "https://cre.otospexerp.com/api/transactions",
           {
             method: "POST",
             headers: {
