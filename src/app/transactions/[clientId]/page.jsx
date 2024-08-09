@@ -163,6 +163,11 @@ export default function ClientPage({ params }) {
       </div>
 
       <div className=" h-[700px] mt-10 flex flex-col gap-10 justify-center items-center w-full">
+        {client.oldCredit && (
+          <div className=" text-xs lg:text-base bg-white p-4 flex justify-center items-center">
+            {`Solde crédit avant application : ${client.oldCredit} TND`}
+          </div>
+        )}
         <div className="h-full bg-gray-100 text-xs lg:text-base w-full">
           <div className="bg-white  rounded-md shadow-md mb-6">
             <div className="max-h-[600px] overflow-y-auto bg-white rounded-md shadow-md">
@@ -187,6 +192,7 @@ export default function ClientPage({ params }) {
                   <TableBody>
                     {filteredTransactions.length > 0 ? (
                       filteredTransactions
+                        .filter((transaction) => !transaction.oldTrans)
                         .sort((a, b) => new Date(a.date) - new Date(b.date))
                         .map((transaction) => (
                           <TableRow key={transaction.id}>

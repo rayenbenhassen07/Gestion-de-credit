@@ -187,6 +187,8 @@ export default function ClientPage({ params }) {
                       name="achat_amount"
                       placeholder="TND"
                       className="p-3 border rounded-md text-xs lg:text-lg w-full"
+                      step="0.01"
+                      min="0"
                     />
                   </div>
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">
@@ -226,6 +228,8 @@ export default function ClientPage({ params }) {
                       name="acompte_amount"
                       placeholder="TND"
                       className="p-3 border rounded-md text-xs lg:text-lg w-full"
+                      step="0.01"
+                      min="0"
                     />
                   </div>
                   <div className="flex flex-col space-y-1 w-full lg:w-1/3">

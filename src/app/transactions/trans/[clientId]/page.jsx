@@ -187,6 +187,7 @@ export default function ClientPage({ params }) {
                   <TableBody>
                     {filteredTransactions.length > 0 ? (
                       filteredTransactions
+                        .filter((transaction) => !transaction.oldTrans)
                         .sort((a, b) => new Date(a.date) - new Date(b.date))
                         .map((transaction) => (
                           <TableRow key={transaction.id}>

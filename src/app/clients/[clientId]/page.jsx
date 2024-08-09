@@ -7,6 +7,7 @@ import { BsArrowLeftCircleFill } from "react-icons/bs";
 
 import { Modal } from "@/components/Modal"; // Import the modal component
 import { ModalTransactions } from "@/components/ModalTransactions"; // Import the new modal component
+import { set } from "react-hook-form";
 
 export default function ClientPage({ params }) {
   const { clientId } = params;
@@ -14,7 +15,7 @@ export default function ClientPage({ params }) {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const [isModalTransactionsOpen, setIsModalTransactionsOpen] = useState(false); // State for transactions modal
-  const [oldClientData, setOldClientData] = useState(null); // State for old client data
+  const [oldClientData, setOldClientData] = useState(false); // State for old client data
   const router = useRouter();
 
   useEffect(() => {
@@ -53,29 +54,6 @@ export default function ClientPage({ params }) {
 
   const handleHistorique = () => {
     setIsModalTransactionsOpen(true); // Open transactions modal
-  };
-
-  const handleFetchOldClientData = async () => {
-    try {
-      if (oldClientData) {
-        setOldClientData(null); // Hide old client data
-        return;
-      }
-
-      const res = await fetch(
-        `https://cre.otospexerp.com/api/old-clients/${clientId}`
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setOldClientData(data);
-      } else {
-        const data = await res.json();
-        setError(data.error || "Failed to fetch old client data");
-      }
-    } catch (error) {
-      setError("Failed to fetch old client data");
-      console.error("Failed to fetch old client data", error);
-    }
   };
 
   if (error) {
@@ -130,10 +108,10 @@ export default function ClientPage({ params }) {
         <div>
           <div className="mt-20 text-xs lg:text-base bg-white p-4 flex justify-center items-center">
             Solde crédit avant application : {client.oldCredit} TND{" "}
-            {client.id <= 168 && (
+            {client.oldCredit && (
               <FaEye
                 className="ml-5 lg:ml-32 cursor-pointer text-xl lg:text-3xl"
-                onClick={handleFetchOldClientData}
+                onClick={() => setOldClientData(!oldClientData)}
               />
             )}
           </div>
@@ -146,21 +124,21 @@ export default function ClientPage({ params }) {
         <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Achat:</span> {oldClientData.achat}{" "}
-              TND
+              <span className="font-bold">Achat :</span>{" "}
+              {client.achat ? client.achat : 0} TND
             </div>
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Acompte:</span>{" "}
-              {oldClientData.accompte} TND
+              <span className="font-bold">Acompte :</span>{" "}
+              {client.accompte ? client.accompte : 0} TND
             </div>
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Crédit avant app</span>{" "}
-              {oldClientData.credit} TND
+              <span className="font-bold">Crédit avant app :</span>{" "}
+              {client.oldCredit ? client.oldCredit : 0} TND
             </div>
 
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Reste à Payer:</span>{" "}
-              {oldClientData.resteAPayer} TND
+              <span className="font-bold">Reste à Payer :</span>{" "}
+              {client.resteAPayer ? client.resteAPayer : 0} TND
             </div>
           </div>
         </div>

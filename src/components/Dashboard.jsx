@@ -153,7 +153,7 @@ export function Dashboard() {
     const lowerCaseSearch = search.toLowerCase();
     return (
       client.name.toLowerCase().includes(lowerCaseSearch) ||
-      client.num.toLowerCase().includes(lowerCaseSearch) ||
+      (client.num?.toLowerCase() || "").includes(lowerCaseSearch) ||
       (client.designation?.toLowerCase() || "").includes(lowerCaseSearch)
     );
   });
@@ -252,7 +252,9 @@ export function Dashboard() {
           <div className="flex items-center">
             <RefreshCwIcon className="w-6 h-6 text-blue-800" />
             <div className="ml-4">
-              <div className="text-2xl font-bold">{totalCredit} TND</div>
+              <div className="text-2xl font-bold">
+                {parseFloat(totalCredit).toFixed(1)} TND
+              </div>
               <div className="text-sm text-gray-600">Récap Total Crédit</div>
             </div>
           </div>
@@ -265,7 +267,7 @@ export function Dashboard() {
             <ClockIcon className="w-6 h-6 text-blue-500" />
             <div className="ml-4">
               <div className="text-2xl font-bold">
-                {totalCreditOlderThanTwoMonths} TND
+                {parseFloat(totalCreditOlderThanTwoMonths).toFixed(1)} TND
               </div>
               <div className="text-sm text-gray-600">
                 Les 10 clients les plus anciens de plus de 2 mois
@@ -281,7 +283,7 @@ export function Dashboard() {
             <ArrowUpIcon className="w-6 h-6 text-blue-500" />
             <div className="ml-4">
               <div className="text-2xl font-bold">
-                {topCreditClientsTotal} TND
+                {parseFloat(topCreditClientsTotal).toFixed(1)} TND
               </div>
               <div className="text-sm text-gray-600">
                 Les 10 clients ayant le plus de crédit
