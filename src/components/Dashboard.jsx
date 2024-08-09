@@ -221,6 +221,13 @@ export function Dashboard() {
     }
   };
 
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat("fr-FR", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(number);
+  };
+
   const handleSortByOldest = () => {
     setIsSortedByOldest(true);
     setIsSortedByTotalCredit(false);
@@ -253,7 +260,7 @@ export function Dashboard() {
             <RefreshCwIcon className="w-6 h-6 text-blue-800" />
             <div className="ml-4">
               <div className="text-2xl font-bold">
-                {parseFloat(totalCredit).toFixed(1)} TND
+                {formatNumber(totalCredit)} TND
               </div>
               <div className="text-sm text-gray-600">Récap Total Crédit</div>
             </div>
@@ -267,7 +274,7 @@ export function Dashboard() {
             <ClockIcon className="w-6 h-6 text-blue-500" />
             <div className="ml-4">
               <div className="text-2xl font-bold">
-                {parseFloat(totalCreditOlderThanTwoMonths).toFixed(1)} TND
+                {formatNumber(totalCreditOlderThanTwoMonths)} TND
               </div>
               <div className="text-sm text-gray-600">
                 Les 10 clients les plus anciens de plus de 2 mois
@@ -283,7 +290,7 @@ export function Dashboard() {
             <ArrowUpIcon className="w-6 h-6 text-blue-500" />
             <div className="ml-4">
               <div className="text-2xl font-bold">
-                {parseFloat(topCreditClientsTotal).toFixed(1)} TND
+                {formatNumber(topCreditClientsTotal)} TND
               </div>
               <div className="text-sm text-gray-600">
                 Les 10 clients ayant le plus de crédit
@@ -375,7 +382,7 @@ export function Dashboard() {
                     }`}
                   >
                     <div className="flex gap-1">
-                      <div>{client.gredit}</div>
+                      <div>{formatNumber(client.gredit)}</div>
                       <div>TND</div>
                     </div>
                   </TableCell>

@@ -102,6 +102,13 @@ export default function ClientPage({ params }) {
     return <div>Error: {error}</div>;
   }
 
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat("fr-FR", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(number);
+  };
+
   if (!client) {
     return (
       <div className="h-screen w-full flex justify-center items-center">
@@ -165,7 +172,9 @@ export default function ClientPage({ params }) {
       <div className=" h-[700px] mt-10 flex flex-col gap-10 justify-center items-center w-full">
         {client.oldCredit && (
           <div className=" text-xs lg:text-base bg-white p-4 flex justify-center items-center">
-            {`Solde crédit avant application : ${client.oldCredit} TND`}
+            {`Solde crédit avant application : ${formatNumber(
+              client.oldCredit
+            )} TND`}
           </div>
         )}
         <div className="h-full bg-gray-100 text-xs lg:text-base w-full">
@@ -214,13 +223,10 @@ export default function ClientPage({ params }) {
                             </TableCell>
                             <TableCell className="p-1 lg:p-2 text-xs lg:text-base w-1/6">
                               {transaction.type === "achat" ? "" : "-"}
-                              {transaction.montant} TND
+                              {formatNumber(transaction.montant)} TND
                             </TableCell>
                             <TableCell className="p-1 lg:p-2 text-xs lg:text-base w-1/6">
-                              {transaction.currentSoldeCredit
-                                ? transaction.currentSoldeCredit
-                                : 0}{" "}
-                              TND
+                              {formatNumber(transaction.currentSoldeCredit)} TND
                             </TableCell>
                           </TableRow>
                         ))

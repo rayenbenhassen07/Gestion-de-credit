@@ -56,6 +56,13 @@ export default function ClientPage({ params }) {
     setIsModalTransactionsOpen(true); // Open transactions modal
   };
 
+  const formatNumber = (number) => {
+    return new Intl.NumberFormat("fr-FR", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    }).format(number);
+  };
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -107,7 +114,8 @@ export default function ClientPage({ params }) {
       {client.oldCredit ? (
         <div>
           <div className="mt-20 text-xs lg:text-base bg-white p-4 flex justify-center items-center">
-            Solde crédit avant application : {client.oldCredit} TND{" "}
+            Solde crédit avant application : {formatNumber(client.oldCredit)}{" "}
+            TND{" "}
             {client.oldCredit && (
               <FaEye
                 className="ml-5 lg:ml-32 cursor-pointer text-xl lg:text-3xl"
@@ -124,21 +132,24 @@ export default function ClientPage({ params }) {
         <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Achat :</span>{" "}
-              {client.achat ? client.achat : 0} TND
+              <span className="font-bold">Achat a crédit :</span>{" "}
+              {client.achat ? formatNumber(client.achat) : "0.000"} TND
             </div>
             <div className="bg-gray-200 p-4 rounded">
               <span className="font-bold">Acompte :</span>{" "}
-              {client.accompte ? client.accompte : 0} TND
+              {client.accompte ? formatNumber(client.accompte) : "0.000"} TND
             </div>
             <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Crédit avant app :</span>{" "}
-              {client.oldCredit ? client.oldCredit : 0} TND
+              <span className="font-bold">
+                reste a payer le mois précédent :
+              </span>{" "}
+              {client.resteAPayer ? formatNumber(client.resteAPayer) : "0.000"}{" "}
+              TND
             </div>
 
-            <div className="bg-gray-200 p-4 rounded">
-              <span className="font-bold">Reste à Payer :</span>{" "}
-              {client.resteAPayer ? client.resteAPayer : 0} TND
+            <div className="bg-yellow-200 p-4 rounded">
+              <span className="font-bold">montant crédit calculer :</span>{" "}
+              {client.oldCredit ? formatNumber(client.oldCredit) : "0.000"} TND
             </div>
           </div>
         </div>
@@ -155,7 +166,7 @@ export default function ClientPage({ params }) {
         <div className="text-xs lg:text-base">Montant crédit</div>
 
         <div className="w-[80%] lg:w-[50%] py-4 rounded-lg lg:py-8 bg-red-500 text-white text-center font-bold text-sm lg:text-xl">
-          {client.gredit} TND
+          {formatNumber(client.gredit)} TND
         </div>
       </div>
     </div>
