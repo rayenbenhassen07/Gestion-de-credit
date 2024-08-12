@@ -71,7 +71,7 @@ export function Dashboard() {
 
   const fetchClients = async () => {
     try {
-      const res = await fetch(`http://37.27.185.240/api/clients`);
+      const res = await fetch(`http://37.27.185.240:80/api/clients`);
       if (res.ok) {
         const data = await res.json();
         setClients(data);
