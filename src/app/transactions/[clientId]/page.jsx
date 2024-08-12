@@ -26,9 +26,7 @@ export default function ClientPage({ params }) {
   useEffect(() => {
     const fetchClient = async () => {
       try {
-        const res = await fetch(
-          `https://cre.otospexerp.com/api/clients/${clientId}`
-        );
+        const res = await fetch(`http://37.27.185.240/api/clients/${clientId}`);
         if (res.ok) {
           const data = await res.json();
           setClient(data);
@@ -45,7 +43,7 @@ export default function ClientPage({ params }) {
     const fetchTransactions = async () => {
       try {
         const res = await fetch(
-          `https://cre.otospexerp.com/api/transactions/${clientId}`
+          `http://37.27.185.240/api/transactions/${clientId}`
         );
         if (res.ok) {
           const data = await res.json();
