@@ -71,7 +71,7 @@ export function Dashboard() {
 
   const fetchClients = async () => {
     try {
-      const res = await fetch(`http://37.27.185.240:80/api/clients`);
+      const res = await fetch(`https://cre.otospexerp.com/api/clients`);
       if (res.ok) {
         const data = await res.json();
         setClients(data);
@@ -87,7 +87,7 @@ export function Dashboard() {
 
   const fetchMetrics = async () => {
     try {
-      const res = await fetch("http://37.27.185.240/api/statistics");
+      const res = await fetch("https://cre.otospexerp.com/api/statistics");
 
       if (!res.ok) {
         const errorMsg = await res.json().catch(() => ({
@@ -123,7 +123,7 @@ export function Dashboard() {
   const handleDeleteClient = async () => {
     try {
       const res = await fetch(
-        `http://37.27.185.240/api/clients/${selectedClientId}`,
+        `https://cre.otospexerp.com/api/clients/${selectedClientId}`,
         {
           method: "DELETE",
         }

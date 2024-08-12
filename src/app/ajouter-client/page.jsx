@@ -32,7 +32,7 @@ export default function AjouterClient() {
     setLoading(true); // Set loading state to true
 
     try {
-      const res = await fetch("http://37.27.185.240/api/clients", {
+      const res = await fetch("https://cre.otospexerp.com/api/clients", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
